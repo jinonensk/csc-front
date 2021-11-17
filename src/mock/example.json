@@ -1,0 +1,79 @@
+{
+  "caseList": [
+    {
+      "id": "145077b2-77fd-400f-a528-78b0e32298d2",
+      "caseName": "Origin Case",
+      "casePrice": "100",
+      "caseImg": "content/OriginCase_PreviewHD.png",
+      "caseSpinBackground": "content/OriginCollectionBackground.png",
+      "dropList": [
+        {
+          "id": "383f8004-0c23-48fb-bba5-466783502cf0",
+          "rate": 5822,
+          "color": "#2943c4",
+          "itemList": [
+            {
+              "id": "2eae299e-cd9d-41e0-8b20-59ad60c95366",
+              "caseId": "145077b2-77fd-400f-a528-78b0e32298d2",
+              "dropRateId": "383f8004-0c23-48fb-bba5-466783502cf0",
+              "itemPrice": "1.08",
+              "itemName": "Case 1 Drop 1 Item 1",
+              "skinName": "Pixel Camouflage",
+              "skinImg": "content/Content_AKR12_PixelCamouflage_PreviewHD.png"
+            },
+            {
+              "id": "2eae299e-cd9d-41e0-8b20-51ad60c95366",
+              "caseId": "145077b2-77fd-400f-a528-78b0e32298d2",
+              "dropRateId": "383f8004-0c23-48fb-bba5-466783502cf0",
+              "itemPrice": "1.08",
+              "itemName": "Case 1 Drop 1 Item 2",
+              "skinName": "Pixel Camouflage",
+              "skinImg": "content/Content_AKR12_PixelCamouflage_PreviewHD.png"
+            }
+          ]
+        },
+        {
+          "id": "383f8004-0c23-48fb-bba5-466783512cf0",
+          "rate": 5822,
+          "color": "#2943c4",
+          "itemList": [
+            {
+              "id": "2eae299e-cd9d-41e0-8b20-59ad60c35366",
+              "caseId": "145077b2-77fd-400f-a528-78b0e32298d2",
+              "dropRateId": "383f8004-0c23-48fb-bba5-466783512cf0",
+              "itemPrice": "1.08",
+              "itemName": "Case 1 Drop 2 Item 1",
+              "skinName": "Pixel Camouflage",
+              "skinImg": "content/Content_AKR12_PixelCamouflage_PreviewHD.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "145077b2-77fd-400f-a528-78b0e32298d3",
+      "caseName": "Origin Case",
+      "casePrice": "100",
+      "caseImg": "content/OriginCase_PreviewHD.png",
+      "caseSpinBackground": "content/OriginCollectionBackground.png",
+      "dropList": [
+        {
+          "id": "383f8004-0c23-48fb-bba5-466783502cf1",
+          "rate": 5822,
+          "color": "#2943c4",
+          "itemList": [
+            {
+              "id": "2eae299e-cd9d-41e0-8b20-59ad60c95363",
+              "caseId": "145077b2-77fd-400f-a528-78b0e32298d3",
+              "dropRateId": "383f8004-0c23-48fb-bba5-466783502cf1",
+              "itemPrice": "1.08",
+              "itemName": "Case 2 Drop 1 Item 1",
+              "skinName": "Pixel Camouflage",
+              "skinImg": "content/Content_AKR12_PixelCamouflage_PreviewHD.png"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

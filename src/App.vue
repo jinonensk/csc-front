@@ -1,30 +1,52 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <router-view/>
+  <header></header>
+  <input ref="file" type="file" @change="handleChange" />
+  <ul>
+    <li v-for="(caseItem, i) in app.caseList" :key="caseItem.id">
+      {{ i }} ==============
+      <CaseListItem :case-item="caseItem" />
+    </li>
+  </ul>
 </template>
+<script>
+import { mapActions, mapState } from "vuex";
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+import CaseListItem from "@/components/CaseListItem.vue";
 
-#nav {
-  padding: 30px;
+import mock from "@/mock/example.json";
+import { bigMock } from "@/mock/mock";
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+export default {
+  name: "App",
+  components: {
+    CaseListItem,
+  },
+  computed: {
+    ...mapState(["app"]),
+  },
+  mounted() {
+    console.log("mock", mock);
+    this.setApp(bigMock);
+    console.log("this.app", this.app);
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-</style>
+    // console.log(new File("file:///C:/Users/developer/Desktop/123.jpg"));
+
+    fetch("file:///C:/Users/developer/Desktop/", { mode: "cors" })
+      .then((res) => res.blob())
+      .then((blob) => {
+        const file = new File([blob], "123.jpg", { type: "image/png" });
+        console.log(file);
+      });
+  },
+  methods: {
+    ...mapActions(["setApp"]),
+    handleChange() {
+      const file = this.$refs.file.files[0];
+      if (file) {
+        console.log(file);
+        console.log("evt.files[0]", this.$refs.file.files);
+      }
+    },
+  },
+};
+</script>
