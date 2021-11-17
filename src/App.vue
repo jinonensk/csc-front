@@ -1,15 +1,35 @@
 <template>
   <header></header>
   <input ref="file" type="file" @change="handleChange" />
-  <ul>
-    <li v-for="(caseItem, i) in app.caseList" :key="caseItem.id">
-      {{ i }} ==============
+  <draggable
+    :model-value="app.caseList"
+    class="case-list"
+    tag="ul"
+    item-key="id"
+    @change="handleDraggableChange"
+  >
+    <template #item="{ element }">
+      <li class="case-list-item">
+        Case list item: {{ element.id }}
+        <CaseListItem :case-item="element" />
+      </li>
+    </template>
+  </draggable>
+  <!-- <li class="case-list-item">
+        Drop list item: {{ element.id }}
+        <DropListItem :drop-item="element" />
+      </li> -->
+
+  <!-- <ul class="case-list">
+    <li v-for="(caseItem, i) in app.caseList" class="case-list-item" :key="caseItem.id">
+      Case list item: {{ i }}
       <CaseListItem :case-item="caseItem" />
     </li>
-  </ul>
+  </ul> -->
 </template>
 <script>
 import { mapActions, mapState } from "vuex";
+import draggable from "vuedraggable";
 
 import CaseListItem from "@/components/CaseListItem.vue";
 
@@ -20,6 +40,7 @@ export default {
   name: "App",
   components: {
     CaseListItem,
+    draggable,
   },
   computed: {
     ...mapState(["app"]),
@@ -31,15 +52,15 @@ export default {
 
     // console.log(new File("file:///C:/Users/developer/Desktop/123.jpg"));
 
-    fetch("file:///C:/Users/developer/Desktop/", { mode: "cors" })
-      .then((res) => res.blob())
-      .then((blob) => {
-        const file = new File([blob], "123.jpg", { type: "image/png" });
-        console.log(file);
-      });
+    // fetch("file:///C:/Users/developer/Desktop/", { mode: "cors" })
+    //   .then((res) => res.blob())
+    //   .then((blob) => {
+    //     const file = new File([blob], "123.jpg", { type: "image/png" });
+    //     console.log(file);
+    //   });
   },
   methods: {
-    ...mapActions(["setApp"]),
+    ...mapActions(["setApp", "handleDraggableCaseListMoved"]),
     handleChange() {
       const file = this.$refs.file.files[0];
       if (file) {
@@ -47,6 +68,18 @@ export default {
         console.log("evt.files[0]", this.$refs.file.files);
       }
     },
+    handleDraggableChange({ moved }) {
+      this.handleDraggableCaseListMoved(moved);
+    },
   },
 };
 </script>
+<style lang="scss" scoped>
+.case-list {
+  display: flex;
+}
+.case-list-item {
+  background-color: lightcoral;
+  margin: 5px;
+}
+</style>
