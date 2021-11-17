@@ -37,11 +37,9 @@ export default {
     ]),
     handleDraggableChange(evt) {
       const handlersMap = {
-        moved: this.handleDraggableItemMoved,
-        added: ({ element, newIndex }) =>
-          this.handleDraggableItemAdded({ element, newIndex, dropId: this.dropItem.id }),
-        removed: ({ element, oldIndex }) =>
-          this.handleDraggableItemRemoved({ element, oldIndex, dropId: this.dropItem.id }),
+        moved: (data) => this.handleDraggableItemMoved({ ...data, dropId: this.dropItem.id }),
+        added: (data) => this.handleDraggableItemAdded({ ...data, dropId: this.dropItem.id }),
+        removed: (data) => this.handleDraggableItemRemoved({ ...data, dropId: this.dropItem.id }),
       };
 
       const action = Object.keys(evt)[0];

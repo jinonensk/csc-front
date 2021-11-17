@@ -4,6 +4,8 @@
     <input type="text" :value="item.itemName" @change="updateInputValue($event, 'itemName')" />
     <input type="text" :value="item.skinName" @change="updateInputValue($event, 'skinName')" />
     <img :src="item.skinImg" alt="#" />
+    <span>case id: {{ item.caseId }}</span>
+    <span>drop-list id: {{ item.dropRateId }}</span>
     <!-- <img src="file:///C:/Users/developer/Desktop/123.jpg" alt="#" /> -->
   </div>
 </template>
@@ -34,6 +36,6 @@ export default {
   flex-direction: column;
   margin-bottom: 16px;
   padding: 8px;
-  background: lightgray;
+  // background: lightgray;
 }
 </style>

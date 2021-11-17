@@ -10,22 +10,11 @@
   >
     <template #item="{ element }">
       <li class="case-list-item">
-        Case list item: {{ element.id }}
+        Case list item: {{ element.caseName }}
         <CaseListItem :case-item="element" />
       </li>
     </template>
   </draggable>
-  <!-- <li class="case-list-item">
-        Drop list item: {{ element.id }}
-        <DropListItem :drop-item="element" />
-      </li> -->
-
-  <!-- <ul class="case-list">
-    <li v-for="(caseItem, i) in app.caseList" class="case-list-item" :key="caseItem.id">
-      Case list item: {{ i }}
-      <CaseListItem :case-item="caseItem" />
-    </li>
-  </ul> -->
 </template>
 <script>
 import { mapActions, mapState } from "vuex";
@@ -77,6 +66,7 @@ export default {
 <style lang="scss" scoped>
 .case-list {
   display: flex;
+  flex-wrap: wrap;
 }
 .case-list-item {
   background-color: lightcoral;

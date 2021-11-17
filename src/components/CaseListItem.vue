@@ -13,17 +13,6 @@
       </li>
     </template>
   </draggable>
-  <!-- <li class="drop-list-item">
-        List item: {{ element.id }}
-        <ItemListItem :item="element" />
-      </li> -->
-
-  <!-- <ul>
-    <li v-for="(dropItem, i) in caseItem.dropList" class="case-list-item" :key="dropItem.id">
-      Drop list item: {{ i }}
-      <DropListItem :drop-item="dropItem" />
-    </li>
-  </ul> -->
 </template>
 <script>
 import { mapActions } from "vuex";
@@ -48,11 +37,10 @@ export default {
     ]),
     handleDraggableChange(evt) {
       const handlersMap = {
-        moved: this.handleDraggableDropListMoved,
-        added: ({ element, newIndex }) =>
-          this.handleDraggableDropListAdded({ element, newIndex, caseId: this.caseItem.id }),
-        removed: ({ element, oldIndex }) =>
-          this.handleDraggableDropListRemoved({ element, oldIndex, caseId: this.caseItem.id }),
+        moved: (data) => this.handleDraggableDropListMoved({ ...data, caseId: this.caseItem.id }),
+        added: (data) => this.handleDraggableDropListAdded({ ...data, caseId: this.caseItem.id }),
+        removed: (data) =>
+          this.handleDraggableDropListRemoved({ ...data, caseId: this.caseItem.id }),
       };
 
       const action = Object.keys(evt)[0];

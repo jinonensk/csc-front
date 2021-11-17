@@ -16,5 +16,6 @@ module.exports = {
     "object-curly-newline": "off",
     "implicit-arrow-linebreak": "off",
     "import/prefer-default-export": "off",
+    "no-plusplus": "off",
   },
 };

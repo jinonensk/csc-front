@@ -1,7 +1,8 @@
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 
 const makeItem = ({ caseId, dropRateId, caseIdx, dropIdx, itemIdx }) => ({
-  id: uuidv4(),
+  // id: uuidv4(),
+  id: `ITEM_ID:${caseIdx}${dropIdx}${itemIdx}`,
   caseId,
   dropRateId,
   itemPrice: "1.08",
@@ -11,7 +12,8 @@ const makeItem = ({ caseId, dropRateId, caseIdx, dropIdx, itemIdx }) => ({
 });
 
 const makeDropItem = ({ caseId, nItems, caseIdx, dropIdx }) => {
-  const id = uuidv4();
+  // const id = uuidv4();
+  const id = `DROP_ID:${caseIdx}${dropIdx}`;
   return {
     id,
     rate: 5822,
@@ -23,7 +25,8 @@ const makeDropItem = ({ caseId, nItems, caseIdx, dropIdx }) => {
 };
 
 const makeCase = ({ nDrops, nItems, caseIdx }) => {
-  const id = uuidv4();
+  // const id = uuidv4();
+  const id = `CASE_ID:${caseIdx}`;
   return {
     id,
     caseName: `Case #${caseIdx}`,
@@ -39,4 +42,4 @@ const makeCase = ({ nDrops, nItems, caseIdx }) => {
 const makeCaseList = (nCases, nDrops, nItems) =>
   new Array(nCases).fill(undefined).map((_, caseIdx) => makeCase({ nDrops, nItems, caseIdx }));
 
-export const bigMock = { caseList: makeCaseList(2, 2, 1) };
+export const bigMock = { caseList: makeCaseList(4, 2, 3) };
