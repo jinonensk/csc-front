@@ -10,6 +10,9 @@
     Колонок: <button @click="setColumnCount(1)">1</button>,
     <button @click="setColumnCount(2)">2</button>, <button @click="setColumnCount(4)">4</button>,
     <button @click="setColumnCount(8)">8</button>
+    <div>
+      <button @click="handleAddNewCaseClick">Add new case</button>
+    </div>
   </header>
   <draggable
     :model-value="app.caseList"
@@ -32,7 +35,6 @@ import draggable from "vuedraggable";
 
 import CaseListItem from "@/components/CaseListItem.vue";
 
-import mock from "@/mock/example.json";
 import { bigMock } from "@/mock/mock";
 
 export default {
@@ -50,12 +52,10 @@ export default {
     ...mapState(["app"]),
   },
   mounted() {
-    console.log("mock", mock);
     this.setApp(bigMock);
-    console.log("this.app", this.app);
   },
   methods: {
-    ...mapActions(["setApp", "handleDraggableCaseListMoved", "addFileToFileMap"]),
+    ...mapActions(["setApp", "handleDraggableCaseListMoved", "addFileToFileMap", "addNewCase"]),
     handleInitialFilesChange() {
       const input = this.$refs.initialFiles;
       const { files } = input;
@@ -72,6 +72,9 @@ export default {
     },
     setColumnCount(count) {
       this.columnsCount = count;
+    },
+    handleAddNewCaseClick() {
+      this.addNewCase();
     },
   },
 };

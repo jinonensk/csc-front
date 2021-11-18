@@ -2,13 +2,13 @@
   <div class="case-list-item">
     <ul class="case-list-item__buttons">
       <li>
-        <button>Add list</button>
+        <button @click="handleAddClick">Add list</button>
       </li>
       <li>
-        <button>Copy case</button>
+        <button @click="handleCopyClick">Copy case</button>
       </li>
       <li>
-        <button>Delete</button>
+        <button @click="handleDeleteClick">Delete</button>
       </li>
     </ul>
     Case list item: {{ caseItem.caseName }}
@@ -48,14 +48,14 @@ export default {
       isOpen: true,
     };
   },
-  updated() {
-    console.log("UPDATED");
-  },
   methods: {
     ...mapActions([
       "handleDraggableDropListMoved",
       "handleDraggableDropListAdded",
       "handleDraggableDropListRemoved",
+      "addNewDropListItemToCaseList",
+      "copyCaseListItem",
+      "deleteCaseListItem",
     ]),
     handleDraggableChange(evt) {
       const handlersMap = {
@@ -70,6 +70,17 @@ export default {
       if (!handler) return;
 
       handler(evt[action]);
+    },
+
+    handleAddClick() {
+      this.addNewDropListItemToCaseList({ caseId: this.caseItem.id });
+    },
+
+    handleCopyClick() {
+      this.copyCaseListItem({ caseId: this.caseItem.id });
+    },
+    handleDeleteClick() {
+      this.deleteCaseListItem({ caseId: this.caseItem.id });
     },
   },
 };

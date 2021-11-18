@@ -2,10 +2,10 @@
   <div class="drop-list-item">
     <ul class="drop-list-item__buttons">
       <li>
-        <button>Add item</button>
+        <button @click="handleAddItemClick">Add item</button>
       </li>
       <li>
-        <button>Copy list</button>
+        <button @click="handleCopyListClick">Copy list</button>
       </li>
       <li>
         <button @click.stop="isOpen = !isOpen">
@@ -13,7 +13,7 @@
         </button>
       </li>
       <li>
-        <button>Delete</button>
+        <button @click="handleDeleteListClick">Delete</button>
       </li>
     </ul>
     Drop list item: {{ dropItem.id }}
@@ -31,16 +31,17 @@
         </li>
       </template>
       <template #footer>
-        <div
-          class="drop-list-item__load-area"
-          :class="{ 'drop-list-item__load-area--drag-over': isDragOver }"
-          @click="handleDropZoneClick"
-          @dragover.prevent="handleDragover"
-          @dragleave.prevent="handleDragleave"
-          @drop.prevent="handleDrop"
-        >
-          <h2>ДОБАВИТЬ</h2>
-        </div>
+        <DropAreaWrapper @drop-files="handleDrop">
+          <template v-slot:default="{ isDragOver }">
+            <div
+              class="drop-list-item__load-area"
+              :class="{ 'drop-list-item__load-area--drag-over': isDragOver }"
+              @click="handleDropZoneClick"
+            >
+              <h2>ДОБАВИТЬ</h2>
+            </div>
+          </template>
+        </DropAreaWrapper>
       </template>
     </draggable>
   </div>
@@ -58,12 +59,14 @@ import { mapActions } from "vuex";
 import draggable from "vuedraggable";
 
 import ItemListItem from "@/components/ItemListItem.vue";
+import DropAreaWrapper from "@/components/ui-kit/DropAreaWrapper.vue";
 
 export default {
   name: "DropListItem",
   components: {
     draggable,
     ItemListItem,
+    DropAreaWrapper,
   },
   props: {
     dropItem: { type: Object, required: true },
@@ -71,7 +74,6 @@ export default {
   data() {
     return {
       isOpen: false,
-      isDragOver: false,
     };
   },
   methods: {
@@ -80,6 +82,9 @@ export default {
       "handleDraggableItemAdded",
       "handleDraggableItemRemoved",
       "addFileToFileMap",
+      "addNewItemToDropList",
+      "copyDropListItem",
+      "removeDropListItem",
     ]),
     handleDraggableChange(evt) {
       const handlersMap = {
@@ -103,21 +108,37 @@ export default {
       if (!files?.length) return;
 
       for (let i = 0; i < files.length; i++) {
-        this.addFileToFileMap({ file: files[i] });
+        const file = files[i];
+        this.addFileToFileMap({ file });
+        this.addNewItemToDropList({
+          dropId: this.dropItem.id,
+          initialItemData: {
+            itemName: file.name,
+            skinName: file.name,
+            skinImg: file.name,
+          },
+        });
       }
 
       input.value = "";
     },
-    handleDragover() {
-      this.isDragOver = true;
-    },
-    handleDragleave() {
-      this.isDragOver = false;
-    },
-    handleDrop(event) {
-      this.$refs.files.files = event.dataTransfer.files;
-      this.handleDragleave();
+
+    handleDrop(files) {
+      this.$refs.files.files = files;
       this.handleFilesUpload();
+    },
+
+    handleAddItemClick() {
+      this.isOpen = true;
+      this.addNewItemToDropList({ dropId: this.dropItem.id });
+    },
+
+    handleCopyListClick() {
+      this.copyDropListItem({ dropId: this.dropItem.id });
+    },
+
+    handleDeleteListClick() {
+      this.removeDropListItem({ dropId: this.dropItem.id });
     },
   },
 };

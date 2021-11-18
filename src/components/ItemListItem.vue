@@ -5,35 +5,20 @@
         <button @click="handleImageButtonClick">Image</button>
       </li>
       <li>
-        <button>Copy</button>
+        <button @click="handleCopyButtonClick">Copy</button>
       </li>
       <li>
-        <button>Delete</button>
+        <button @click="handleDeleteButtonClick">Delete</button>
       </li>
     </ul>
-    <div class="item-list-item__image-wrapper">
-      <template v-if="currentFile">
-        <img
-          :src="imageSrc"
-          :alt="item.skinImg"
-          width="155"
-          height="100"
-          class="item-list-item__image"
-        />
-        <button class="item-list-item__image-delete" @click="handleDeleteImage">Delete</button>
-      </template>
-      <button
-        v-else
-        class="item-list-item__image-button"
-        :class="{ 'item-list-item__image-button--drag-over': isDragOver }"
-        @click.stop="handleImageButtonClick"
-        @dragover.prevent="handleDragover"
-        @dragleave.prevent="handleDragleave"
-        @drop.prevent="handleDrop"
-      >
-        Добавить
-      </button>
-    </div>
+    <ImageDropArea
+      :imageSrc="imageSrc"
+      :imageAlt="item.skinImg"
+      :is-show-image="!!currentFile"
+      @delete="handleDeleteImage"
+      @drop-files="handleDrop"
+      @upload-click="handleImageButtonClick"
+    />
     <div class="item-list-item__container">
       <label>
         <span>Item name: </span>
@@ -66,9 +51,13 @@
 </template>
 <script>
 import { mapActions, mapState } from "vuex";
+import ImageDropArea from "@/components/ui-kit/ImageDropArea.vue";
 
 export default {
   name: "ItemListImte",
+  components: {
+    ImageDropArea,
+  },
   props: {
     item: { type: Object, required: true },
   },
@@ -87,7 +76,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["updateItemData", "addFileToFileMap"]),
+    ...mapActions(["updateItemData", "addFileToFileMap", "copyItem", "removeItem"]),
 
     updateInputValue(evt, fieldName) {
       const { value } = evt.target;
@@ -115,22 +104,25 @@ export default {
 
       input.value = "";
     },
+
+    handleDrop(files) {
+      this.$refs.file.files = files;
+      this.handleFilesUpload();
+    },
+
     handleDeleteImage() {
       this.updateItemData({
         id: this.item.id,
         data: { key: "skinImg", value: "" },
       });
     },
-    handleDragover() {
-      this.isDragOver = true;
+
+    handleCopyButtonClick() {
+      this.copyItem({ id: this.item.id });
     },
-    handleDragleave() {
-      this.isDragOver = false;
-    },
-    handleDrop(event) {
-      this.$refs.file.files = event.dataTransfer.files;
-      this.handleDragleave();
-      this.handleFilesUpload();
+
+    handleDeleteButtonClick() {
+      this.removeItem({ id: this.item.id });
     },
   },
 };
@@ -155,13 +147,10 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  // max-width: 400px;
-  // width: 100%;
   flex-grow: 1;
   min-width: 250px;
   margin: 0 auto;
   padding: 8px;
-  // margin-bottom: 16px;
 }
 .item-list-item__buttons {
   position: absolute;
@@ -185,44 +174,5 @@ label {
   input {
     width: 100%;
   }
-}
-.item-list-item__image-wrapper {
-  position: relative;
-  width: 100%;
-  width: 155px;
-  height: 100px;
-  padding: 8px;
-  box-sizing: content-box;
-}
-.item-list-item__image-button {
-  display: block;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  background: transparent;
-  border: 1px dashed gray;
-  border-radius: 5px;
-  overflow: hidden;
-
-  &--drag-over,
-  &:hover {
-    cursor: pointer;
-    background: yellow;
-  }
-}
-.item-list-item__image {
-  // height: 100%;
-  display: block;
-  max-width: 100%;
-  width: 100%;
-  // min-height: 100%;
-  // max-width: 250px;
-  height: 100px;
-  margin: auto;
-}
-.item-list-item__image-delete {
-  position: absolute;
-  top: 0;
-  right: 0;
 }
 </style>
