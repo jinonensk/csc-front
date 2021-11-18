@@ -1,5 +1,8 @@
 import {
   SET_APP,
+  SET_FILE_TO_FILE_MAP,
+  SET_INPUT_FILE_LOADER_MULTIPLE_REF,
+  SET_INPUT_FILE_LOADER_REF,
   UPDATE_APP_DATA,
   UPDATE_CASE_DATA,
   UPDATE_DROP_ITEM_DATA,
@@ -95,6 +98,15 @@ export default {
   updateItemData: ({ commit, getters }, { id, data }) => {
     const { caseIdx, dropIdx, itemIdx } = getters.itemsMap[id];
     commit(UPDATE_ITEM_DATA, { caseIdx, dropIdx, itemIdx, data });
+  },
+  setInputFileLoaderRef: ({ commit }, { ref }) => {
+    commit(SET_INPUT_FILE_LOADER_REF, { ref });
+  },
+  setInputFileLoaderMultipleRef: ({ commit }, { ref }) => {
+    commit(SET_INPUT_FILE_LOADER_MULTIPLE_REF, { ref });
+  },
+  addFileToFileMap: ({ commit }, { file }) => {
+    commit(SET_FILE_TO_FILE_MAP, { file });
   },
 
   ...draggableHandlers,

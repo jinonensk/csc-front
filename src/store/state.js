@@ -28,4 +28,7 @@ export default () => ({
       },
     ],
   },
+  fileToFileNameMap: {},
+  inputFileLoaderRef: null,
+  inputFileLoaderMultipleRef: null,
 });

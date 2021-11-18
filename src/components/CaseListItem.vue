@@ -1,18 +1,32 @@
 <template>
-  <draggable
-    :model-value="caseItem.dropList"
-    group="drop-list"
-    tag="ul"
-    item-key="id"
-    @change="handleDraggableChange"
-  >
-    <template #item="{ element }">
-      <li class="case-list-item">
-        Drop list item: {{ element.id }}
-        <DropListItem :drop-item="element" />
+  <div class="case-list-item">
+    <ul class="case-list-item__buttons">
+      <li>
+        <button>Add list</button>
       </li>
-    </template>
-  </draggable>
+      <li>
+        <button>Copy case</button>
+      </li>
+      <li>
+        <button>Delete</button>
+      </li>
+    </ul>
+    Case list item: {{ caseItem.caseName }}
+    <draggable
+      v-if="isOpen"
+      :model-value="caseItem.dropList"
+      group="drop-list"
+      tag="ul"
+      item-key="id"
+      @change="handleDraggableChange"
+    >
+      <template #item="{ element }">
+        <li class="case-list-item__drop-list-item">
+          <DropListItem :drop-item="element" />
+        </li>
+      </template>
+    </draggable>
+  </div>
 </template>
 <script>
 import { mapActions } from "vuex";
@@ -28,6 +42,14 @@ export default {
   components: {
     DropListItem,
     draggable,
+  },
+  data() {
+    return {
+      isOpen: true,
+    };
+  },
+  updated() {
+    console.log("UPDATED");
   },
   methods: {
     ...mapActions([
@@ -54,6 +76,20 @@ export default {
 </script>
 <style lang="scss" scoped>
 .case-list-item {
-  background-color: lightskyblue;
+  margin-bottom: 8px;
+  padding: 8px;
+  border-radius: 5px;
+  background-color: lightcoral;
+}
+.case-list-item__buttons {
+  display: flex;
+  justify-content: center;
+
+  li {
+    margin-left: 8px;
+  }
+}
+.case-list-item__drop-list-item {
+  margin-bottom: 8px;
 }
 </style>

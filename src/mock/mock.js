@@ -8,7 +8,8 @@ const makeItem = ({ caseId, dropRateId, caseIdx, dropIdx, itemIdx }) => ({
   itemPrice: "1.08",
   itemName: `Case #${caseIdx} Drop #${dropIdx} Item #${itemIdx}`,
   skinName: "Pixel Camouflage",
-  skinImg: "content/Content_AKR12_PixelCamouflage_PreviewHD.png",
+  skinImg: "какой-пацан-исходник.jpg",
+  // skinImg: "Content_AKR12_PixelCamouflage_PreviewHD.png",
 });
 
 const makeDropItem = ({ caseId, nItems, caseIdx, dropIdx }) => {
@@ -42,4 +43,4 @@ const makeCase = ({ nDrops, nItems, caseIdx }) => {
 const makeCaseList = (nCases, nDrops, nItems) =>
   new Array(nCases).fill(undefined).map((_, caseIdx) => makeCase({ nDrops, nItems, caseIdx }));
 
-export const bigMock = { caseList: makeCaseList(4, 2, 3) };
+export const bigMock = { caseList: makeCaseList(4, 2, 2) };

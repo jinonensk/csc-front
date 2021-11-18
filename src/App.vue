@@ -1,16 +1,26 @@
 <template>
-  <header></header>
-  <input ref="file" type="file" @change="handleChange" />
+  <header>
+    <input
+      ref="initialFiles"
+      multiple
+      type="file"
+      accept="image/*"
+      @change="handleInitialFilesChange"
+    />
+    Колонок: <button @click="setColumnCount(1)">1</button>,
+    <button @click="setColumnCount(2)">2</button>, <button @click="setColumnCount(4)">4</button>,
+    <button @click="setColumnCount(8)">8</button>
+  </header>
   <draggable
     :model-value="app.caseList"
     class="case-list"
     tag="ul"
     item-key="id"
+    :style="{ 'grid-template-columns': `repeat(${columnsCount}, 1fr)` }"
     @change="handleDraggableChange"
   >
     <template #item="{ element }">
       <li class="case-list-item">
-        Case list item: {{ element.caseName }}
         <CaseListItem :case-item="element" />
       </li>
     </template>
@@ -31,6 +41,11 @@ export default {
     CaseListItem,
     draggable,
   },
+  data() {
+    return {
+      columnsCount: 1,
+    };
+  },
   computed: {
     ...mapState(["app"]),
   },
@@ -38,38 +53,35 @@ export default {
     console.log("mock", mock);
     this.setApp(bigMock);
     console.log("this.app", this.app);
-
-    // console.log(new File("file:///C:/Users/developer/Desktop/123.jpg"));
-
-    // fetch("file:///C:/Users/developer/Desktop/", { mode: "cors" })
-    //   .then((res) => res.blob())
-    //   .then((blob) => {
-    //     const file = new File([blob], "123.jpg", { type: "image/png" });
-    //     console.log(file);
-    //   });
   },
   methods: {
-    ...mapActions(["setApp", "handleDraggableCaseListMoved"]),
-    handleChange() {
-      const file = this.$refs.file.files[0];
-      if (file) {
-        console.log(file);
-        console.log("evt.files[0]", this.$refs.file.files);
+    ...mapActions(["setApp", "handleDraggableCaseListMoved", "addFileToFileMap"]),
+    handleInitialFilesChange() {
+      const input = this.$refs.initialFiles;
+      const { files } = input;
+      if (!files?.length) return;
+
+      for (let i = 0; i < files.length; i++) {
+        this.addFileToFileMap({ file: files[i] });
       }
+
+      input.value = "";
     },
     handleDraggableChange({ moved }) {
       this.handleDraggableCaseListMoved(moved);
+    },
+    setColumnCount(count) {
+      this.columnsCount = count;
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 .case-list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
 }
 .case-list-item {
-  background-color: lightcoral;
   margin: 5px;
+  margin-bottom: 8px;
 }
 </style>
