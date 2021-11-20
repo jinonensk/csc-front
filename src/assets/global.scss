@@ -6,6 +6,19 @@ ul {
 
 body * {
   box-sizing: border-box;
+
+  &:focus {
+    outline-color: rgb(77, 144, 254);
+    outline-offset: 3px;
+    outline-style: auto;
+    outline-width: 5px;
+  }
+}
+
+input {
+  border-radius: 5px;
+  border: 1px solid rgba(128, 128, 128, 9.5);
+  padding: 3px;
 }
 
 button {
@@ -34,4 +47,5 @@ p {
   ); /* stylelint-disable-line property-no-vendor-prefix */
   clip-path: inset(100%); /* stylelint-disable-line indentation */
   white-space: nowrap;
+  visibility: hidden;
 }

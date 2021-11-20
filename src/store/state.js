@@ -3,24 +3,24 @@ export default () => ({
     caseList: [
       {
         id: "0000-0000-0000-0000",
-        caseName: "",
-        casePrice: 0,
-        caseImg: "caseImg.png",
-        caseSpinBackground: "caseSpinBackground.png",
+        caseName: "Case name",
+        casePrice: 100,
+        caseImg: "case-img.png",
+        caseSpinBackground: "case-spin-background.png",
         dropList: [
           {
             id: "1111-1111-1111-1111",
             rate: 0,
-            color: "#FFFFFF",
+            color: "#E28D8D",
             itemList: [
               {
                 id: "2222-2222-2222-2222",
                 caseId: "0000-0000-0000-0000",
                 dropRateId: "1111-1111-1111-1111",
                 itemPrice: 0,
-                itemName: "",
-                skinName: "",
-                skinImg: "",
+                itemName: "Item name",
+                skinName: "Skin name",
+                skinImg: "skin-image.png",
               },
             ],
           },
