@@ -12,6 +12,14 @@ button {
   cursor: pointer;
 }
 
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
 .visually-hidden {
   position: absolute;
   overflow: hidden;

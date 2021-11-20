@@ -134,8 +134,8 @@ const itemHadler = {
     const currentCase = store.state.app.caseList[caseIdx];
 
     const newArray = [...currentCase.dropList[dropIdx].itemList];
-    const newItem = makeDraftItem({ dropId, caseId: currentCase.id });
-    newArray.push({ ...newItem, ...initialItemData });
+    const newItem = { ...makeDraftItem({ dropId, caseId: currentCase.id }), ...initialItemData };
+    newArray.push(newItem);
 
     store.commit(UPDATE_DROP_ITEM_DATA, {
       caseIdx,
@@ -172,10 +172,10 @@ const dropListHandler = {
   addNewDropListItemToCaseList: (store, { caseId }) => {
     const caseIdx = store.getters.caseListMap[caseId];
     const currentCase = store.state.app.caseList[caseIdx];
-    const newDropList = [...currentCase.dropList];
 
-    const newDrooListItem = makeDraftDropListItem({ caseId });
-    newDropList.push(newDrooListItem);
+    const newDropList = [...currentCase.dropList, makeDraftDropListItem({ caseId })];
+    // const newDrooListItem = makeDraftDropListItem({ caseId });
+    // newDropList.push(newDrooListItem);
 
     store.commit(UPDATE_CASE_DATA, {
       caseIdx,

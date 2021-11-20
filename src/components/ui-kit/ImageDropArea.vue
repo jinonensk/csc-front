@@ -24,7 +24,15 @@
       </div>
     </template>
   </DropAreaWrapper>
+  <input
+    ref="file"
+    type="file"
+    accept="image/*"
+    class="visually-hidden"
+    @change="handleFilesUpload"
+  />
 </template>
+
 <script>
 import DropAreaWrapper from "@/components/ui-kit/DropAreaWrapper.vue";
 
@@ -32,7 +40,7 @@ export default {
   name: "ImageDropArea",
   emits: {
     delete: null,
-    "drop-files": null,
+    upload: null,
   },
   props: {
     imageSrc: { type: String, required: true },
@@ -47,10 +55,19 @@ export default {
       this.$emit("delete");
     },
     handleDrop(files) {
-      this.$emit("drop-files", files);
+      const file = files[0];
+      if (!file) return;
+      this.$emit("upload", file);
     },
     handleImageButtonClick() {
-      this.$emit("upload-click");
+      this.$refs.file.click();
+    },
+    handleFilesUpload() {
+      const input = this.$refs.file;
+      const file = input?.files[0];
+      if (!file) return;
+      this.$emit("upload", file);
+      input.value = "";
     },
   },
 };
