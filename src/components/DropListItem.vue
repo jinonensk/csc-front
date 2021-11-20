@@ -1,7 +1,7 @@
 <template>
-  <div class="drop-list-item">
-    <header class="drop-list-item__header">
-      <h3 class="drop-list-item__title">Drop list item</h3>
+  <div class="drop-list-item" :style="{ border: `1px solid ${dropItem.color}` }">
+    <header class="drop-list-item__header" :style="{ backgroundColor: dropItem.color }">
+      <!-- <h3 class="drop-list-item__title">Drop list item</h3> -->
       <ul class="drop-list-item__buttons">
         <li>
           <FAIconCircleButton icon="plus" title="Add item" @click="handleAddItemClick" />
@@ -21,15 +21,19 @@
         </li>
       </ul>
     </header>
-    <template v-if="isOpen">
+    <div v-if="isOpen" class="drop-list-item__content">
       <div class="drop-list-item__inputs-container">
         <label>
           <p>Drop rate:</p>
-          <input type="text" :value="dropItem.rate" @change="updateInputValue($event, 'rate')" />
+          <input type="text" :value="dropItem.rate" @change="handleInputChange($event, 'rate')" />
         </label>
         <label>
           <p>Drop color:</p>
-          <input type="color" :value="dropItem.color" @change="updateInputValue($event, 'color')" />
+          <input
+            type="color"
+            :value="dropItem.color"
+            @change="handleInputChange($event, 'color')"
+          />
         </label>
       </div>
       <draggable
@@ -44,21 +48,20 @@
             <ItemListItem :item="element" />
           </li>
         </template>
-        <template #footer>
-          <DropAreaWrapper @drop-files="handleDrop">
-            <template v-slot:default="{ isDragOver }">
-              <div
-                class="drop-list-item__load-area"
-                :class="{ 'drop-list-item__load-area--drag-over': isDragOver }"
-                @click="handleDropZoneClick"
-              >
-                <h2>ДОБАВИТЬ</h2>
-              </div>
-            </template>
-          </DropAreaWrapper>
-        </template>
+        <!-- <template #footer> </template> -->
       </draggable>
-    </template>
+      <DropAreaWrapper @drop-files="handleDrop">
+        <template v-slot:default="{ isDragOver }">
+          <div
+            class="drop-list-item__load-area"
+            :class="{ 'drop-list-item__load-area--drag-over': isDragOver }"
+            @click="handleDropZoneClick"
+          >
+            <h2>Click or drop images</h2>
+          </div>
+        </template>
+      </DropAreaWrapper>
+    </div>
   </div>
   <input
     ref="files"
@@ -95,30 +98,44 @@ export default {
   },
   methods: {
     ...mapActions([
-      "handleDraggableItemMoved",
-      "handleDraggableItemAdded",
-      "handleDraggableItemRemoved",
       "addFileToFileMap",
       "addNewItemToDropList",
       "copyDropListItem",
       "removeDropListItem",
+      "updateDropListItemData",
+      "handleDragAndDropItem",
     ]),
+
+    handleInputChange(evt, fieldName) {
+      const { value } = evt.target;
+
+      this.updateDropListItemData({
+        dropId: this.dropItem.id,
+        data: { key: fieldName, value },
+      });
+    },
+
     handleDraggableChange(evt) {
-      const handlersMap = {
-        moved: (data) => this.handleDraggableItemMoved({ ...data, dropId: this.dropItem.id }),
-        added: (data) => this.handleDraggableItemAdded({ ...data, dropId: this.dropItem.id }),
-        removed: (data) => this.handleDraggableItemRemoved({ ...data, dropId: this.dropItem.id }),
+      const actionNameMap = {
+        moved: "move",
+        added: "insert",
+        removed: "remove",
       };
 
       const action = Object.keys(evt)[0];
-      const handler = handlersMap[action];
-      if (!handler) return;
+      const data = evt[action];
 
-      handler(evt[action]);
+      this.handleDragAndDropItem({
+        ...data,
+        dropId: this.dropItem.id,
+        action: actionNameMap[action],
+      });
     },
+
     handleDropZoneClick() {
       this.$refs.files.click();
     },
+
     handleFilesUpload() {
       const input = this.$refs.files;
       const { files } = input;
@@ -162,10 +179,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 .drop-list-item {
-  padding: 8px;
-  background-color: lightskyblue;
   border-radius: 5px;
   cursor: grab;
+  background-color: #ffffff;
 
   // &:hover .drop-list-item__buttons {
   //   opacity: 1;
@@ -174,13 +190,14 @@ export default {
 }
 .drop-list-item__header {
   display: flex;
-  padding-bottom: 8px;
+  padding: 8px;
 }
 .drop-list-item__title {
   margin-right: auto;
 }
 .drop-list-item__buttons {
   display: flex;
+  margin-left: auto;
   // justify-content: flex-end;
   // opacity: 0;
   // pointer-events: none;
@@ -188,6 +205,9 @@ export default {
   li {
     margin-left: 8px;
   }
+}
+.drop-list-item__content {
+  padding: 0 8px 8px 8px;
 }
 .drop-list-item__inputs-container {
   display: flex;
@@ -213,19 +233,24 @@ export default {
 }
 .drop-list-item__item-list-item {
   margin-bottom: 8px;
+
+  &:last-child {
+    border-bottom: 1px solid rgba(128, 128, 128, 0.5);
+    margin-bottom: 16px;
+  }
 }
 .drop-list-item__load-area {
   display: flex;
   justify-content: center;
   width: 100%;
   padding: 16px;
-  border: 1px dashed green;
+  border: 1px dashed gray;
   border-radius: 15px;
 
   &--drag-over,
   &:hover {
     cursor: pointer;
-    background-color: yellow;
+    background-color: rgba(128, 128, 128, 0.1);
   }
 }
 </style>

@@ -28,7 +28,7 @@
           <input
             type="text"
             :value="caseItem.caseName"
-            @change="updateInputValue($event, 'caseName')"
+            @change="handleInputChange($event, 'caseName')"
           />
         </label>
         <label>
@@ -36,7 +36,7 @@
           <input
             type="text"
             :value="caseItem.casePrice"
-            @change="updateInputValue($event, 'casePrice')"
+            @change="handleInputChange($event, 'casePrice')"
           />
         </label>
       </div>
@@ -44,21 +44,21 @@
         <li class="case-list-item__images-item">
           <h3>Case Image</h3>
           <ImageDropArea
-            :imageSrc="null"
-            :is-show-image="null"
-            :imageAlt="null"
-            @delete="handleImageDelete('caseImage')"
-            @upload="handleImageUpload($event, 'caseImage')"
+            :imageSrc="getImageSrc('caseImg')"
+            :is-show-image="!!getCurrentFile('caseImg')"
+            :imageAlt="caseItem.caseImg"
+            @delete="handleImageDelete('caseImg')"
+            @upload="handleImageUpload($event, 'caseImg')"
           />
         </li>
         <li class="case-list-item__images-item">
           <h3>Case spin background</h3>
           <ImageDropArea
-            :imageSrc="null"
-            :is-show-image="null"
-            :imageAlt="null"
-            @delete="handleImageDelete('caseImage')"
-            @upload="handleImageUpload($event, 'caseImage')"
+            :imageSrc="getImageSrc('caseSpinBackground')"
+            :is-show-image="!!getCurrentFile('caseSpinBackground')"
+            :imageAlt="caseItem.caseSpinBackground"
+            @delete="handleImageDelete('caseSpinBackground')"
+            @upload="handleImageUpload($event, 'caseSpinBackground')"
           />
         </li>
       </ul>
@@ -79,7 +79,7 @@
   </div>
 </template>
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import draggable from "vuedraggable";
 
 import DropListItem from "@/components/DropListItem.vue";
@@ -102,28 +102,56 @@ export default {
       isOpen: true,
     };
   },
+  computed: mapState(["fileToFileNameMap"]),
   methods: {
     ...mapActions([
-      "handleDraggableDropListMoved",
-      "handleDraggableDropListAdded",
-      "handleDraggableDropListRemoved",
       "addNewDropListItemToCaseList",
       "copyCaseListItem",
       "deleteCaseListItem",
+      "updateCaseData",
+      "addFileToFileMap",
+      "handleDragAndDropDropList",
     ]),
+
+    handleInputChange(evt, fieldName) {
+      const { value } = evt.target;
+
+      this.updateCaseData({
+        caseId: this.caseItem.id,
+        data: { key: fieldName, value },
+      });
+    },
+
+    handleImageUpload(file, fieldName) {
+      this.updateCaseData({
+        caseId: this.caseItem.id,
+        data: { key: fieldName, value: file.name },
+      });
+      this.addFileToFileMap({ file });
+    },
+
+    handleImageDelete(fieldName) {
+      this.updateCaseData({
+        caseId: this.caseItem.id,
+        data: { key: fieldName, value: "" },
+      });
+    },
+
     handleDraggableChange(evt) {
-      const handlersMap = {
-        moved: (data) => this.handleDraggableDropListMoved({ ...data, caseId: this.caseItem.id }),
-        added: (data) => this.handleDraggableDropListAdded({ ...data, caseId: this.caseItem.id }),
-        removed: (data) =>
-          this.handleDraggableDropListRemoved({ ...data, caseId: this.caseItem.id }),
+      const actionNameMap = {
+        moved: "move",
+        added: "insert",
+        removed: "remove",
       };
 
       const action = Object.keys(evt)[0];
-      const handler = handlersMap[action];
-      if (!handler) return;
+      const data = evt[action];
 
-      handler(evt[action]);
+      this.handleDragAndDropDropList({
+        ...data,
+        caseId: this.caseItem.id,
+        action: actionNameMap[action],
+      });
     },
 
     handleAddClick() {
@@ -133,6 +161,7 @@ export default {
     handleCopyClick() {
       this.copyCaseListItem({ caseId: this.caseItem.id });
     },
+
     handleDeleteClick() {
       this.deleteCaseListItem({ caseId: this.caseItem.id });
     },
@@ -140,28 +169,15 @@ export default {
     handleImageButtonClick() {
       this.$refs.file.click();
     },
-    handleImageUpload(file, fieldName) {
-      console.log(fieldName);
-      // this.updateItemData({
-      //   id: this.item.id,
-      //   data: { key: fieldName, value: file.name },
-      // });
-      this.addFileToFileMap({ file });
+
+    getCurrentFile(fieldName) {
+      const imageName = this.caseItem[fieldName];
+      return this.fileToFileNameMap[imageName];
     },
-    handleImageDelete(fieldName) {
-      console.log(fieldName);
-      // this.updateItemData({
-      //   id: this.item.id,
-      //   data: { key: fieldName, value: "" },
-      // });
-    },
-    updateInputValue(evt, fieldName) {
-      const { value } = evt.target;
-      console.log(value, fieldName);
-      // this.updateItemData({
-      //   id: this.item.id,
-      //   data: { key: fieldName, value },
-      // });
+
+    getImageSrc(fieldName) {
+      const file = this.getCurrentFile(fieldName);
+      return file ? URL.createObjectURL(file) : this.caseItem[fieldName];
     },
   },
 };
@@ -171,7 +187,8 @@ export default {
   margin-bottom: 8px;
   padding: 8px;
   border-radius: 5px;
-  background-color: lightcoral;
+  background-color: rgba(0, 0, 0, 0.02);
+  box-shadow: rgb(9 30 66 / 25%) 0px 4px 8px -2px, rgb(9 30 66 / 8%) 0px 0px 0px 1px;
 
   // &:hover .case-list-item__buttons {
   //   opacity: 1;

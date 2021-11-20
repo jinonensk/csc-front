@@ -119,10 +119,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 .item-list-item {
-  border-radius: 5px;
+  // border-radius: 5px;
   padding: 8px;
-  background-color: lightgreen;
+  // background-color: lightgreen;
   word-break: break-all;
+  border-top: 1px solid rgba(128, 128, 128, 0.5);
 
   // &:hover .item-list-item__buttons {
   //   pointer-events: initial;

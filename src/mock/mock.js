@@ -43,4 +43,4 @@ const makeCase = ({ nDrops, nItems, caseIdx }) => {
 const makeCaseList = (nCases, nDrops, nItems) =>
   new Array(nCases).fill(undefined).map((_, caseIdx) => makeCase({ nDrops, nItems, caseIdx }));
 
-export const bigMock = { caseList: makeCaseList(4, 2, 2) };
+export const bigMock = { caseList: makeCaseList(2, 2, 2) };

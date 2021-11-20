@@ -11,7 +11,12 @@
             class="image-drop-area__image"
             loading="lazy"
           />
-          <button class="image-drop-area__image-delete" @click="handleDeleteImage">Delete</button>
+          <FAIconCircleButton
+            class="image-drop-area__image-delete"
+            icon="times"
+            title="Delete"
+            @click="handleDeleteImage"
+          />
         </template>
         <button
           v-else
@@ -19,7 +24,7 @@
           :class="{ 'image-drop-area__image-button--drag-over': isDragOver }"
           @click.stop="handleImageButtonClick"
         >
-          Добавить
+          Click or drop images
         </button>
       </div>
     </template>
@@ -35,6 +40,7 @@
 
 <script>
 import DropAreaWrapper from "@/components/ui-kit/DropAreaWrapper.vue";
+import FAIconCircleButton from "@/components/ui-kit/FAIconCircleButton.vue";
 
 export default {
   name: "ImageDropArea",
@@ -49,6 +55,7 @@ export default {
   },
   components: {
     DropAreaWrapper,
+    FAIconCircleButton,
   },
   methods: {
     handleDeleteImage() {
@@ -94,7 +101,7 @@ export default {
   &--drag-over,
   &:hover {
     cursor: pointer;
-    background: yellow;
+    background: rgba(128, 128, 128, 0.1);
   }
 }
 .image-drop-area__image {

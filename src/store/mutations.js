@@ -3,7 +3,7 @@ import {
   SET_FILE_TO_FILE_MAP,
   UPDATE_APP_DATA,
   UPDATE_CASE_DATA,
-  UPDATE_DROP_ITEM_DATA,
+  UPDATE_DROP_LIST_ITEM_DATA,
   UPDATE_ITEM_DATA,
 } from "./mutations-type";
 
@@ -20,7 +20,7 @@ export default {
     state.app.caseList[caseIdx][key] = value;
   },
 
-  [UPDATE_DROP_ITEM_DATA]: (state, { caseIdx, dropIdx, data }) => {
+  [UPDATE_DROP_LIST_ITEM_DATA]: (state, { caseIdx, dropIdx, data }) => {
     const { key, value } = data;
     state.app.caseList[caseIdx].dropList[dropIdx][key] = value;
   },
