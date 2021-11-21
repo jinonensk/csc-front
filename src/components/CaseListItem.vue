@@ -198,15 +198,17 @@ export default {
 .case-list-item__header {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: wrap-reverse;
   padding-bottom: 8px;
 }
 .case-list-item__title {
   margin-right: auto;
+  word-break: break-all;
 }
 .case-list-item__buttons {
   display: flex;
   margin-left: auto;
+  margin-bottom: 4px;
   // pointer-events: none;
   // opacity: 0;
 
@@ -219,7 +221,6 @@ export default {
   flex-direction: column;
   justify-content: center;
   flex-grow: 1;
-  min-width: 250px;
   margin: 0 auto;
   padding: 8px;
 

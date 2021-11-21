@@ -1,9 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { makeDraftDropListItem } from "./make-draft-drop-list-item";
 
-const caseId = uuidv4();
-
-export const makeDraftCase = () => ({
+export const makeDraftCase = (caseId = uuidv4()) => ({
   id: caseId,
   caseName: "",
   casePrice: 0,

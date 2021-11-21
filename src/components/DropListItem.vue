@@ -190,14 +190,17 @@ export default {
 }
 .drop-list-item__header {
   display: flex;
+  flex-wrap: wrap;
   padding: 8px;
 }
 .drop-list-item__title {
   margin-right: auto;
+  word-break: break-all;
 }
 .drop-list-item__buttons {
   display: flex;
   margin-left: auto;
+  margin-bottom: 4px;
   // justify-content: flex-end;
   // opacity: 0;
   // pointer-events: none;
@@ -214,7 +217,6 @@ export default {
   flex-direction: column;
   justify-content: center;
   flex-grow: 1;
-  min-width: 250px;
   margin: 0 auto;
   margin-bottom: 16px;
   padding: 8px;

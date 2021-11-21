@@ -132,16 +132,18 @@ export default {
 }
 .item-list-item__header {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap-reverse;
   align-items: center;
   padding-bottom: 8px;
 }
 .item-list-item__title {
   margin-right: auto;
+  word-break: break-all;
 }
 .item-list-item__buttons {
   display: flex;
-  justify-content: flex-end;
+  margin-left: auto;
+  margin-bottom: 4px;
 
   li {
     margin-left: 8px;
@@ -149,13 +151,14 @@ export default {
 }
 .item-list-item__container {
   display: flex;
+  flex-wrap: wrap;
 }
 .item-list-item__inputs-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   flex-grow: 1;
-  min-width: 250px;
+  min-width: 200px;
   margin: 0 auto;
   padding: 8px;
 
