@@ -20,6 +20,6 @@ git commit -m 'deploy'
 # git push -f git@github.com:jinonensk/jinonensk.github.io.git main
 
 # если вы публикуете по адресу https://<USERNAME>.github.io/<REPO>
-git push -f git@github.com:jinonensk/csc-front.git main:gh-pages
+git push -f git@github.com:jinonensk/csc-front.git master:gh-pages
 
 cd -
