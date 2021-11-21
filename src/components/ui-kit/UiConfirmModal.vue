@@ -40,11 +40,15 @@ export default {
   watch: {
     isOpen(newVal) {
       if (newVal) {
+        const hasScrollOnPage = this.checkPageScroll();
+
         document.addEventListener("keydown", this.handleEscClick);
         document.body.classList.add("popup-open");
+        if (hasScrollOnPage) document.body.classList.add("scroll-placeholder");
       } else {
         document.removeEventListener("keydown", this.handleEscClick);
         document.body.classList.remove("popup-open");
+        document.body.classList.remove("scroll-placeholder");
       }
     },
   },
@@ -64,6 +68,9 @@ export default {
       this.isOpen = true;
 
       return popupPromise;
+    },
+    checkPageScroll() {
+      return window.innerHeight < document.body.clientHeight;
     },
     handleConfirm() {
       this.$options.popupController.resolve(true);
