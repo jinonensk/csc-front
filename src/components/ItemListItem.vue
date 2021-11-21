@@ -115,7 +115,9 @@ export default {
     },
 
     async handleDeleteButtonClick() {
-      const res = await this.$refs.modal.open({ title: `Remove "${this.item.itemName}" item?` });
+      const { itemName } = this.item;
+      const title = `Remove ${itemName ? `"${itemName}" ` : ""}item?`;
+      const res = await this.$refs.modal.open({ title });
       if (res) this.removeItem({ id: this.item.id });
     },
   },
@@ -123,16 +125,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 .item-list-item {
-  // border-radius: 5px;
   padding: 8px;
-  // background-color: lightgreen;
   word-break: break-all;
   border-top: 1px solid rgba(128, 128, 128, 0.5);
-
-  // &:hover .item-list-item__buttons {
-  //   pointer-events: initial;
-  //   opacity: 1;
-  // }
 }
 .item-list-item__header {
   display: flex;

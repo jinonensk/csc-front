@@ -103,7 +103,7 @@ export default {
   padding: 30px;
   padding-top: 40px;
   background-color: #ffffff;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: rgb(9 30 66 / 25%) 0px 4px 8px -2px, rgb(9 30 66 / 8%) 0px 0px 0px 1px;
   border-radius: 10px;
   transform: translateX(-50%) translateY(-50%);
 }

@@ -166,9 +166,9 @@ export default {
     },
 
     async handleDeleteClick() {
-      const res = await this.$refs.modal.open({
-        title: `Remove "${this.caseItem.caseName}" case?`,
-      });
+      const { caseName } = this.caseItem;
+      const title = `Remove ${caseName ? `"${caseName}" ` : ""}case?`;
+      const res = await this.$refs.modal.open({ title });
       if (res) this.deleteCaseListItem({ caseId: this.caseItem.id });
     },
 
@@ -195,11 +195,6 @@ export default {
   border-radius: 5px;
   background-color: rgba(0, 0, 0, 0.02);
   box-shadow: rgb(9 30 66 / 25%) 0px 4px 8px -2px, rgb(9 30 66 / 8%) 0px 0px 0px 1px;
-
-  // &:hover .case-list-item__buttons {
-  //   opacity: 1;
-  //   pointer-events: initial;
-  // }
 }
 .case-list-item__header {
   display: flex;
@@ -215,8 +210,6 @@ export default {
   display: flex;
   margin-left: auto;
   margin-bottom: 4px;
-  // pointer-events: none;
-  // opacity: 0;
 
   li {
     margin-left: 8px;

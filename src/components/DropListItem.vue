@@ -186,11 +186,6 @@ export default {
   border-radius: 5px;
   cursor: grab;
   background-color: #ffffff;
-
-  // &:hover .drop-list-item__buttons {
-  //   opacity: 1;
-  //   pointer-events: initial;
-  // }
 }
 .drop-list-item__header {
   display: flex;
@@ -205,9 +200,6 @@ export default {
   display: flex;
   margin-left: auto;
   margin-bottom: 4px;
-  // justify-content: flex-end;
-  // opacity: 0;
-  // pointer-events: none;
 
   li {
     margin-left: 8px;
