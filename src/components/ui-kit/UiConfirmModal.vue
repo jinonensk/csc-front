@@ -90,6 +90,7 @@ export default {
   bottom: 0;
   right: 0;
   z-index: 100;
+  cursor: initial;
 }
 .confirm-modal__content {
   position: fixed;
