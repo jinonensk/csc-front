@@ -9,7 +9,7 @@
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 export default {
-  name: "FAIconCircleButton",
+  name: "UiFAIconCircleButton",
   components: {
     FontAwesomeIcon,
   },

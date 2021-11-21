@@ -4,20 +4,20 @@
       <h2 class="case-list-item__title">{{ caseItem.caseName }}</h2>
       <ul class="case-list-item__buttons">
         <li>
-          <FAIconCircleButton icon="plus" title="Add list" @click="handleAddClick" />
+          <UiFAIconCircleButton icon="plus" title="Add list" @click="handleAddClick" />
         </li>
         <li>
-          <FAIconCircleButton icon="clone" title="Copy case" @click="handleCopyClick" />
+          <UiFAIconCircleButton icon="clone" title="Copy case" @click="handleCopyClick" />
         </li>
         <li>
-          <FAIconCircleButton
+          <UiFAIconCircleButton
             :icon="isOpen ? 'angle-down' : 'angle-up'"
             :title="isOpen ? 'Collapse' : 'Open'"
             @click.stop="isOpen = !isOpen"
           />
         </li>
         <li>
-          <FAIconCircleButton icon="times" title="Delete" @click="handleDeleteClick" />
+          <UiFAIconCircleButton icon="times" title="Delete" @click="handleDeleteClick" />
         </li>
       </ul>
     </header>
@@ -43,7 +43,7 @@
       <ul class="case-list-item__images-list">
         <li class="case-list-item__images-item">
           <h3>Case Image</h3>
-          <ImageDropArea
+          <UiImageDropArea
             :imageSrc="getImageSrc('caseImg')"
             :is-show-image="!!getCurrentFile('caseImg')"
             :imageAlt="caseItem.caseImg"
@@ -53,7 +53,7 @@
         </li>
         <li class="case-list-item__images-item">
           <h3>Case spin background</h3>
-          <ImageDropArea
+          <UiImageDropArea
             :imageSrc="getImageSrc('caseSpinBackground')"
             :is-show-image="!!getCurrentFile('caseSpinBackground')"
             :imageAlt="caseItem.caseSpinBackground"
@@ -77,14 +77,16 @@
       </draggable>
     </template>
   </div>
+  <UiConfirmModal ref="modal" />
 </template>
 <script>
 import { mapActions, mapState } from "vuex";
 import draggable from "vuedraggable";
 
 import DropListItem from "@/components/DropListItem.vue";
-import FAIconCircleButton from "@/components/ui-kit/FAIconCircleButton.vue";
-import ImageDropArea from "@/components/ui-kit/ImageDropArea.vue";
+import UiFAIconCircleButton from "@/components/ui-kit/UiFAIconCircleButton.vue";
+import UiImageDropArea from "@/components/ui-kit/UiImageDropArea.vue";
+import UiConfirmModal from "@/components/ui-kit/UiConfirmModal.vue";
 
 export default {
   name: "CaseListItem",
@@ -93,8 +95,9 @@ export default {
   },
   components: {
     DropListItem,
-    FAIconCircleButton,
-    ImageDropArea,
+    UiFAIconCircleButton,
+    UiImageDropArea,
+    UiConfirmModal,
     draggable,
   },
   data() {
@@ -162,8 +165,11 @@ export default {
       this.copyCaseListItem({ caseId: this.caseItem.id });
     },
 
-    handleDeleteClick() {
-      this.deleteCaseListItem({ caseId: this.caseItem.id });
+    async handleDeleteClick() {
+      const res = await this.$refs.modal.open({
+        title: `Remove "${this.caseItem.caseName}" case?`,
+      });
+      if (res) this.deleteCaseListItem({ caseId: this.caseItem.id });
     },
 
     handleImageButtonClick() {

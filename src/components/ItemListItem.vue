@@ -4,15 +4,15 @@
       <h4 class="item-list-item__title">{{ item.itemName }}</h4>
       <ul class="item-list-item__buttons">
         <li>
-          <FAIconCircleButton icon="clone" title="Copy" @click="handleCopyButtonClick" />
+          <UiFAIconCircleButton icon="clone" title="Copy" @click="handleCopyButtonClick" />
         </li>
         <li>
-          <FAIconCircleButton icon="times" title="Delete" @click="handleDeleteButtonClick" />
+          <UiFAIconCircleButton icon="times" title="Delete" @click="handleDeleteButtonClick" />
         </li>
       </ul>
     </header>
     <div class="item-list-item__container">
-      <ImageDropArea
+      <UiImageDropArea
         :imageSrc="imageSrc"
         :imageAlt="item.skinImg"
         :is-show-image="!!currentFile"
@@ -50,18 +50,21 @@
       </div>
     </div>
   </div>
+  <UiConfirmModal ref="modal" />
 </template>
 <script>
 import { mapActions, mapState } from "vuex";
 
-import ImageDropArea from "@/components/ui-kit/ImageDropArea.vue";
-import FAIconCircleButton from "@/components/ui-kit/FAIconCircleButton.vue";
+import UiImageDropArea from "@/components/ui-kit/UiImageDropArea.vue";
+import UiFAIconCircleButton from "@/components/ui-kit/UiFAIconCircleButton.vue";
+import UiConfirmModal from "@/components/ui-kit/UiConfirmModal.vue";
 
 export default {
   name: "ItemListImte",
   components: {
-    ImageDropArea,
-    FAIconCircleButton,
+    UiImageDropArea,
+    UiFAIconCircleButton,
+    UiConfirmModal,
   },
   props: {
     item: { type: Object, required: true },
@@ -111,8 +114,9 @@ export default {
       this.copyItem({ id: this.item.id });
     },
 
-    handleDeleteButtonClick() {
-      this.removeItem({ id: this.item.id });
+    async handleDeleteButtonClick() {
+      const res = await this.$refs.modal.open({ title: `Remove "${this.item.itemName}" item?` });
+      if (res) this.removeItem({ id: this.item.id });
     },
   },
 };

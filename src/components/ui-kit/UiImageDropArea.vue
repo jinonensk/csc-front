@@ -1,5 +1,5 @@
 <template>
-  <DropAreaWrapper @drop-files="handleDrop">
+  <UiDropAreaWrapper @drop-files="handleDrop">
     <template v-slot:default="{ isDragOver }">
       <div class="image-drop-area">
         <template v-if="isShowImage">
@@ -11,7 +11,7 @@
             class="image-drop-area__image"
             loading="lazy"
           />
-          <FAIconCircleButton
+          <UiFAIconCircleButton
             class="image-drop-area__image-delete"
             icon="times"
             title="Delete"
@@ -28,7 +28,7 @@
         </button>
       </div>
     </template>
-  </DropAreaWrapper>
+  </UiDropAreaWrapper>
   <input
     ref="file"
     type="file"
@@ -39,8 +39,8 @@
 </template>
 
 <script>
-import DropAreaWrapper from "@/components/ui-kit/DropAreaWrapper.vue";
-import FAIconCircleButton from "@/components/ui-kit/FAIconCircleButton.vue";
+import UiDropAreaWrapper from "@/components/ui-kit/UiDropAreaWrapper.vue";
+import UiFAIconCircleButton from "@/components/ui-kit/UiFAIconCircleButton.vue";
 
 export default {
   name: "ImageDropArea",
@@ -54,8 +54,8 @@ export default {
     isShowImage: { type: Boolean, required: true },
   },
   components: {
-    DropAreaWrapper,
-    FAIconCircleButton,
+    UiDropAreaWrapper,
+    UiFAIconCircleButton,
   },
   methods: {
     handleDeleteImage() {

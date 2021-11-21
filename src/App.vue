@@ -1,53 +1,59 @@
 <template>
   <header class="app__header">
-    <button class="app__header-button" @click="handleLoadJsonClick">Load json</button>
-    <button class="app__header-button" @click="handleLoadImagesClick">Load images</button>
-    <button class="app__header-button" @click="handleAddNewCaseClick">Add new case</button>
+    <UiButton class="app__header-button" @click="handleLoadJsonClick">Load json</UiButton>
+    <UiButton class="app__header-button" @click="handleLoadImagesClick">Load images</UiButton>
+    <UiButton class="app__header-button" @click="handleAddNewCaseClick">Add new case</UiButton>
     <div class="app__columns-select">
       <p class="app__columns-select-title">Колонок:</p>
-      <FAIconCircleButton
+      <UiFAIconCircleButton
         class="app__columns-button"
         title="Add new case"
         @click="setColumnCount(1)"
-        >1</FAIconCircleButton
       >
-      <FAIconCircleButton
+        1
+      </UiFAIconCircleButton>
+      <UiFAIconCircleButton
         class="app__columns-button"
         title="Add new case"
         @click="setColumnCount(2)"
-        >2</FAIconCircleButton
       >
-      <FAIconCircleButton
+        2
+      </UiFAIconCircleButton>
+      <UiFAIconCircleButton
         class="app__columns-button"
         title="Add new case"
         @click="setColumnCount(4)"
-        >4</FAIconCircleButton
       >
-      <FAIconCircleButton
+        4
+      </UiFAIconCircleButton>
+      <UiFAIconCircleButton
         class="app__columns-button"
         title="Add new case"
         @click="setColumnCount(8)"
-        >8</FAIconCircleButton
       >
+        8
+      </UiFAIconCircleButton>
     </div>
-    <button class="app__header-button app__header-button--export" @click="handleExportJsonClick">
+    <UiButton class="app__header-button app__header-button--export" @click="handleExportJsonClick">
       Export json
-    </button>
+    </UiButton>
   </header>
-  <draggable
-    :model-value="app.caseList"
-    class="app__case-list"
-    tag="ul"
-    item-key="id"
-    :style="{ 'grid-template-columns': `repeat(${columnsCount}, 1fr)` }"
-    @change="handleDraggableChange"
-  >
-    <template #item="{ element }">
-      <li class="app__case-list-item">
-        <CaseListItem :case-item="element" />
-      </li>
-    </template>
-  </draggable>
+  <main class="app__main">
+    <draggable
+      :model-value="app.caseList"
+      class="app__case-list"
+      tag="ul"
+      item-key="id"
+      :style="{ 'grid-template-columns': `repeat(${columnsCount}, 1fr)` }"
+      @change="handleDraggableChange"
+    >
+      <template #item="{ element }">
+        <li class="app__case-list-item">
+          <CaseListItem :case-item="element" />
+        </li>
+      </template>
+    </draggable>
+  </main>
   <input
     ref="loadJson"
     class="visually-hidden"
@@ -69,7 +75,8 @@ import { mapActions, mapState } from "vuex";
 import draggable from "vuedraggable";
 
 import CaseListItem from "@/components/CaseListItem.vue";
-import FAIconCircleButton from "@/components/ui-kit/FAIconCircleButton.vue";
+import UiFAIconCircleButton from "@/components/ui-kit/UiFAIconCircleButton.vue";
+import UiButton from "@/components/ui-kit/UiButton.vue";
 // import { bigMock } from "@/mock/mock";
 
 export default {
@@ -77,7 +84,8 @@ export default {
   components: {
     CaseListItem,
     draggable,
-    FAIconCircleButton,
+    UiFAIconCircleButton,
+    UiButton,
   },
   data() {
     return {
@@ -157,27 +165,19 @@ export default {
 .app__header {
   display: flex;
   align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
+  padding: 8px 50px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.5);
+}
+.app__main {
+  display: flex;
+  flex-direction: column;
+  padding: 0 50px;
 }
 
 .app__header-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   margin-right: 16px;
-  padding: 3px 6px;
-  background: #ffffff;
-  border: 1px solid gray;
-  color: gray;
-  font-size: 16px;
-  line-height: 16px;
-  font-weight: bold;
-  border-radius: 999px;
 
-  &:hover:not(:active) {
-    border: 1px solid black;
-    color: black;
-  }
   &--export {
     margin-left: auto;
     margin-right: 0;

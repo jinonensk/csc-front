@@ -4,20 +4,20 @@
       <!-- <h3 class="drop-list-item__title">Drop list item</h3> -->
       <ul class="drop-list-item__buttons">
         <li>
-          <FAIconCircleButton icon="plus" title="Add item" @click="handleAddItemClick" />
+          <UiFAIconCircleButton icon="plus" title="Add item" @click="handleAddItemClick" />
         </li>
         <li>
-          <FAIconCircleButton icon="clone" title="Copy list" @click="handleCopyListClick" />
+          <UiFAIconCircleButton icon="clone" title="Copy list" @click="handleCopyListClick" />
         </li>
         <li>
-          <FAIconCircleButton
+          <UiFAIconCircleButton
             :icon="isOpen ? 'angle-down' : 'angle-up'"
             :title="isOpen ? 'Collapse' : 'Open'"
             @click.stop="isOpen = !isOpen"
           />
         </li>
         <li>
-          <FAIconCircleButton icon="times" title="Delete" @click="handleDeleteListClick" />
+          <UiFAIconCircleButton icon="times" title="Delete" @click="handleDeleteListClick" />
         </li>
       </ul>
     </header>
@@ -50,7 +50,7 @@
         </template>
         <!-- <template #footer> </template> -->
       </draggable>
-      <DropAreaWrapper @drop-files="handleDrop">
+      <UiDropAreaWrapper @drop-files="handleDrop">
         <template v-slot:default="{ isDragOver }">
           <div
             class="drop-list-item__load-area"
@@ -60,7 +60,7 @@
             <h2>Click or drop images</h2>
           </div>
         </template>
-      </DropAreaWrapper>
+      </UiDropAreaWrapper>
     </div>
   </div>
   <input
@@ -71,22 +71,25 @@
     class="visually-hidden"
     @change="handleFilesUpload"
   />
+  <UiConfirmModal ref="modal" />
 </template>
 <script>
 import { mapActions } from "vuex";
 import draggable from "vuedraggable";
 
 import ItemListItem from "@/components/ItemListItem.vue";
-import DropAreaWrapper from "@/components/ui-kit/DropAreaWrapper.vue";
-import FAIconCircleButton from "@/components/ui-kit/FAIconCircleButton.vue";
+import UiDropAreaWrapper from "@/components/ui-kit/UiDropAreaWrapper.vue";
+import UiFAIconCircleButton from "@/components/ui-kit/UiFAIconCircleButton.vue";
+import UiConfirmModal from "@/components/ui-kit/UiConfirmModal.vue";
 
 export default {
   name: "DropListItem",
   components: {
     draggable,
     ItemListItem,
-    DropAreaWrapper,
-    FAIconCircleButton,
+    UiDropAreaWrapper,
+    UiFAIconCircleButton,
+    UiConfirmModal,
   },
   props: {
     dropItem: { type: Object, required: true },
@@ -171,8 +174,9 @@ export default {
       this.copyDropListItem({ dropId: this.dropItem.id });
     },
 
-    handleDeleteListClick() {
-      this.removeDropListItem({ dropId: this.dropItem.id });
+    async handleDeleteListClick() {
+      const res = await this.$refs.modal.open({ title: "Remove drop list?" });
+      if (res) this.removeDropListItem({ dropId: this.dropItem.id });
     },
   },
 };
@@ -248,6 +252,7 @@ export default {
   padding: 16px;
   border: 1px dashed gray;
   border-radius: 15px;
+  text-align: center;
 
   &--drag-over,
   &:hover {

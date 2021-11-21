@@ -10,7 +10,7 @@
 </template>
 <script>
 export default {
-  name: "DropAreaWrapper",
+  name: "UiDropAreaWrapper",
   emits: {
     "drop-files": null,
   },
