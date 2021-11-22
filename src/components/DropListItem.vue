@@ -59,9 +59,13 @@
         handle=".item-list-item__draggable"
         @change="handleDraggableChange"
       >
-        <template #item="{ element }">
+        <template #item="{ element, index }">
           <li class="drop-list-item__item-list-item">
-            <ItemListItem :item="element" />
+            <ItemListItem
+              :item="element"
+              @remove="handleRemoveItem(index)"
+              @copy="handleCopyItem(index)"
+            />
           </li>
         </template>
         <!-- <template #footer> </template> -->
@@ -110,6 +114,10 @@ export default {
   props: {
     dropItem: { type: Object, required: true },
   },
+  emits: {
+    remove: null,
+    copy: null,
+  },
   data() {
     return {
       isOpen: false,
@@ -118,11 +126,11 @@ export default {
   methods: {
     ...mapActions([
       "addFileToFileMap",
-      "addNewItemToDropList",
-      "copyDropListItem",
-      "removeDropListItem",
+      "addNewItemToItemList",
       "updateDropListItemData",
       "handleDragAndDropItem",
+      "removeItemListItem",
+      "copyItemListItem",
     ]),
 
     handleInputChange(evt, fieldName) {
@@ -163,7 +171,7 @@ export default {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         this.addFileToFileMap({ file });
-        this.addNewItemToDropList({
+        this.addNewItemToItemList({
           dropId: this.dropItem.id,
           initialItemData: {
             itemName: file.name,
@@ -183,16 +191,26 @@ export default {
 
     handleAddItemClick() {
       this.isOpen = true;
-      this.addNewItemToDropList({ dropId: this.dropItem.id });
+      this.addNewItemToItemList({ dropId: this.dropItem.id });
     },
 
     handleCopyListClick() {
-      this.copyDropListItem({ dropId: this.dropItem.id });
+      this.$emit("copy");
     },
 
-    async handleDeleteListClick() {
-      const res = await this.$refs.modal.open({ title: "Remove drop list?" });
-      if (res) this.removeDropListItem({ dropId: this.dropItem.id });
+    handleDeleteListClick() {
+      this.$emit("remove");
+    },
+
+    async handleRemoveItem(itemIdx) {
+      const { itemName } = this.dropItem.itemList[itemIdx];
+      const title = `Remove ${itemName ? `"${itemName}" ` : ""}item?`;
+      const res = await this.$refs.modal.open({ title });
+      if (res) this.removeItemListItem({ dropId: this.dropItem.id, itemIdx });
+    },
+
+    handleCopyItem(itemIdx) {
+      this.copyItemListItem({ dropId: this.dropItem.id, itemIdx });
     },
   },
 };

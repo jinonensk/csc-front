@@ -48,9 +48,13 @@
       :style="{ 'grid-template-columns': `repeat(${columnsCount}, 1fr)` }"
       @change="handleDraggableChange"
     >
-      <template #item="{ element }">
+      <template #item="{ element, index }">
         <li class="app__case-list-item">
-          <CaseListItem :case-item="element" />
+          <CaseListItem
+            :case-item="element"
+            @remove="handleRemoveCase(index)"
+            @copy="handleCopyCase(index)"
+          />
         </li>
       </template>
     </draggable>
@@ -70,6 +74,7 @@
     accept="image/*"
     @change="handleLoadImagesChange"
   />
+  <UiConfirmModal ref="modal" />
 </template>
 <script>
 import { mapActions, mapState } from "vuex";
@@ -78,7 +83,7 @@ import draggable from "vuedraggable";
 import CaseListItem from "@/components/CaseListItem.vue";
 import UiFAIconCircleButton from "@/components/ui-kit/UiFAIconCircleButton.vue";
 import UiButton from "@/components/ui-kit/UiButton.vue";
-// import { bigMock } from "@/mock/mock";
+import UiConfirmModal from "@/components/ui-kit/UiConfirmModal.vue";
 
 export default {
   name: "App",
@@ -87,6 +92,7 @@ export default {
     draggable,
     UiFAIconCircleButton,
     UiButton,
+    UiConfirmModal,
   },
   data() {
     return {
@@ -96,11 +102,15 @@ export default {
   computed: {
     ...mapState(["app"]),
   },
-  // mounted() {
-  //   this.setApp(bigMock);
-  // },
   methods: {
-    ...mapActions(["setApp", "handleDraggableCaseListMoved", "addFileToFileMap", "addNewCase"]),
+    ...mapActions([
+      "setApp",
+      "handleDraggableCaseListMoved",
+      "addFileToFileMap",
+      "addNewCase",
+      "deleteCase",
+      "copyCase",
+    ]),
 
     handleLoadJsonClick() {
       this.$refs.loadJson.click();
@@ -158,6 +168,17 @@ export default {
 
     handleAddNewCaseClick() {
       this.addNewCase();
+    },
+
+    async handleRemoveCase(caseIdx) {
+      const { caseName } = this.app.caseList[caseIdx];
+      const title = `Remove ${caseName ? `"${caseName}" ` : ""}case?`;
+      const res = await this.$refs.modal.open({ title });
+      if (res) this.deleteCase({ caseIdx });
+    },
+
+    handleCopyCase(caseIdx) {
+      this.copyCase({ caseIdx });
     },
   },
 };

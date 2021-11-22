@@ -57,24 +57,25 @@
       </div>
     </div>
   </div>
-  <UiConfirmModal ref="modal" />
 </template>
 <script>
 import { mapActions, mapState } from "vuex";
 
 import UiImageDropArea from "@/components/ui-kit/UiImageDropArea.vue";
 import UiFAIconCircleButton from "@/components/ui-kit/UiFAIconCircleButton.vue";
-import UiConfirmModal from "@/components/ui-kit/UiConfirmModal.vue";
 
 export default {
   name: "ItemListImte",
   components: {
     UiImageDropArea,
     UiFAIconCircleButton,
-    UiConfirmModal,
   },
   props: {
     item: { type: Object, required: true },
+  },
+  emits: {
+    remove: null,
+    copy: null,
   },
   data() {
     return {
@@ -91,7 +92,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["updateItemData", "addFileToFileMap", "copyItem", "removeItem"]),
+    ...mapActions(["updateItemData", "addFileToFileMap"]),
 
     updateInputValue(evt, fieldName) {
       const { value } = evt.target;
@@ -118,14 +119,11 @@ export default {
     },
 
     handleCopyButtonClick() {
-      this.copyItem({ id: this.item.id });
+      this.$emit("copy");
     },
 
     async handleDeleteButtonClick() {
-      const { itemName } = this.item;
-      const title = `Remove ${itemName ? `"${itemName}" ` : ""}item?`;
-      const res = await this.$refs.modal.open({ title });
-      if (res) this.removeItem({ id: this.item.id });
+      this.$emit("remove");
     },
   },
 };

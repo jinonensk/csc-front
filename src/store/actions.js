@@ -54,18 +54,16 @@ const appHandlers = {
 
     commit(UPDATE_APP_DATA, { key: "caseList", value: newCaseList });
   },
-  copyCaseListItem: ({ commit, getters, state }, { caseId }) => {
+  copyCase: ({ commit, state }, { caseIdx }) => {
     const { caseList } = state.app;
-    const caseIdx = getters.caseListMap[caseId];
 
     const element = copyCaseListItem(caseList[caseIdx]);
     const newCaseList = arrayHelper.add({ array: caseList, element });
 
     commit(UPDATE_APP_DATA, { key: "caseList", value: newCaseList });
   },
-  deleteCaseListItem: ({ commit, getters, state }, { caseId }) => {
+  deleteCase: ({ commit, state }, { caseIdx }) => {
     const { caseList } = state.app;
-    const caseIdx = getters.caseListMap[caseId];
 
     const newCaseList = arrayHelper.remove({ array: caseList, oldIndex: caseIdx });
 
@@ -74,9 +72,12 @@ const appHandlers = {
 };
 
 const caseHandlers = {
-  handleDragAndDropDropList: (store, { caseId, action, element, oldIndex, newIndex }) => {
-    const caseIdx = store.getters.caseListMap[caseId];
-    const dropList = [...store.state.app.caseList[caseIdx].dropList];
+  handleDragAndDropDropListItem: (
+    { state, getters, commit },
+    { caseId, action, element, oldIndex, newIndex },
+  ) => {
+    const caseIdx = getters.caseListMap[caseId];
+    const { dropList } = state.app.caseList[caseIdx];
     const handler = arrayHelper[action];
 
     if (action === "insert") {
@@ -88,24 +89,24 @@ const caseHandlers = {
 
     const newDropList = handler({ array: dropList, newIndex, oldIndex, element });
 
-    store.commit(UPDATE_CASE_DATA, { caseIdx, data: { key: "dropList", value: newDropList } });
+    commit(UPDATE_CASE_DATA, { caseIdx, data: { key: "dropList", value: newDropList } });
   },
-  removeDropListItem: ({ commit, getters, state }, { dropId }) => {
-    const { caseIdx, dropIdx } = getters.dropListMap[dropId];
+  removeDropListItem: ({ commit, getters, state }, { caseId, dropItemIdx }) => {
+    const caseIdx = getters.caseListMap[caseId];
     const { dropList } = state.app.caseList[caseIdx];
 
-    const newDropList = arrayHelper.remove({ array: dropList, oldIndex: dropIdx });
+    const newDropList = arrayHelper.remove({ array: dropList, oldIndex: dropItemIdx });
 
     commit(UPDATE_CASE_DATA, {
       caseIdx,
       data: { key: "dropList", value: newDropList },
     });
   },
-  copyDropListItem: ({ commit, getters, state }, { dropId }) => {
-    const { caseIdx, dropIdx } = getters.dropListMap[dropId];
+  copyDropListItem: ({ commit, getters, state }, { caseId, dropItemIdx }) => {
+    const caseIdx = getters.caseListMap[caseId];
     const { dropList } = state.app.caseList[caseIdx];
 
-    const element = copyDropListItem(dropList[dropIdx]);
+    const element = copyDropListItem(dropList[dropItemIdx]);
     const newDropList = arrayHelper.add({ array: dropList, element });
 
     commit(UPDATE_CASE_DATA, {
@@ -113,7 +114,7 @@ const caseHandlers = {
       data: { key: "dropList", value: newDropList },
     });
   },
-  addNewDropListItemToCaseList: ({ commit, getters, state }, { caseId }) => {
+  addNewItemToDropList: ({ commit, getters, state }, { caseId }) => {
     const caseIdx = getters.caseListMap[caseId];
     const { dropList } = state.app.caseList[caseIdx];
 
@@ -133,10 +134,13 @@ const caseHandlers = {
 };
 
 const dropListItemHandlers = {
-  handleDragAndDropItem: (store, { dropId, action, element, oldIndex, newIndex }) => {
-    const { caseIdx, dropIdx } = store.getters.dropListMap[dropId];
-    const currentCase = store.state.app.caseList[caseIdx];
-    const itemList = [...currentCase.dropList[dropIdx].itemList];
+  handleDragAndDropItem: (
+    { state, getters, commit },
+    { dropId, action, element, oldIndex, newIndex },
+  ) => {
+    const { caseIdx, dropItemIdx } = getters.dropListMap[dropId];
+    const currentCase = state.app.caseList[caseIdx];
+    const itemList = [...currentCase.dropList[dropItemIdx].itemList];
     const handler = arrayHelper[action];
 
     if (action === "insert") {
@@ -146,41 +150,41 @@ const dropListItemHandlers = {
 
     const newItemList = handler({ array: itemList, newIndex, oldIndex, element });
 
-    store.commit(UPDATE_DROP_LIST_ITEM_DATA, {
+    commit(UPDATE_DROP_LIST_ITEM_DATA, {
       caseIdx,
-      dropIdx,
+      dropItemIdx,
       data: { key: "itemList", value: newItemList },
     });
   },
-  removeItem: (store, { id }) => {
-    const { caseIdx, dropIdx, itemIdx } = store.getters.itemsMap[id];
-    const { itemList } = store.state.app.caseList[caseIdx].dropList[dropIdx];
+  removeItemListItem: ({ state, getters, commit }, { dropId, itemIdx }) => {
+    const { caseIdx, dropItemIdx } = getters.dropListMap[dropId];
+    const { itemList } = state.app.caseList[caseIdx].dropList[dropItemIdx];
 
     const newItemList = arrayHelper.remove({ array: itemList, oldIndex: itemIdx });
 
-    store.commit(UPDATE_DROP_LIST_ITEM_DATA, {
+    commit(UPDATE_DROP_LIST_ITEM_DATA, {
       caseIdx,
-      dropIdx,
+      dropItemIdx,
       data: { key: "itemList", value: newItemList },
     });
   },
-  copyItem: (store, { id }) => {
-    const { caseIdx, dropIdx, itemIdx } = store.getters.itemsMap[id];
-    const { itemList } = store.state.app.caseList[caseIdx].dropList[dropIdx];
+  copyItemListItem: ({ state, getters, commit }, { dropId, itemIdx }) => {
+    const { caseIdx, dropItemIdx } = getters.dropListMap[dropId];
+    const { itemList } = state.app.caseList[caseIdx].dropList[dropItemIdx];
 
     const element = copyItem(itemList[itemIdx]);
     const newItemList = arrayHelper.add({ array: itemList, element });
 
-    store.commit(UPDATE_DROP_LIST_ITEM_DATA, {
+    commit(UPDATE_DROP_LIST_ITEM_DATA, {
       caseIdx,
-      dropIdx,
+      dropItemIdx,
       data: { key: "itemList", value: newItemList },
     });
   },
-  addNewItemToDropList: (store, { dropId, initialItemData = {} }) => {
-    const { caseIdx, dropIdx } = store.getters.dropListMap[dropId];
-    const currentCase = store.state.app.caseList[caseIdx];
-    const { itemList } = currentCase.dropList[dropIdx];
+  addNewItemToItemList: ({ state, getters, commit }, { dropId, initialItemData = {} }) => {
+    const { caseIdx, dropItemIdx } = getters.dropListMap[dropId];
+    const currentCase = state.app.caseList[caseIdx];
+    const { itemList } = currentCase.dropList[dropItemIdx];
 
     const element = makeDraftItem({ dropId, caseId: currentCase.id });
     const newItemList = arrayHelper.add({
@@ -188,24 +192,24 @@ const dropListItemHandlers = {
       element: { ...element, ...initialItemData },
     });
 
-    store.commit(UPDATE_DROP_LIST_ITEM_DATA, {
+    commit(UPDATE_DROP_LIST_ITEM_DATA, {
       caseIdx,
-      dropIdx,
+      dropItemIdx,
       data: { key: "itemList", value: newItemList },
     });
   },
   updateDropListItemData: ({ commit, getters }, { dropId, data }) => {
-    const { caseIdx, dropIdx } = getters.dropListMap[dropId];
+    const { caseIdx, dropItemIdx } = getters.dropListMap[dropId];
 
-    commit(UPDATE_DROP_LIST_ITEM_DATA, { caseIdx, dropIdx, data });
+    commit(UPDATE_DROP_LIST_ITEM_DATA, { caseIdx, dropItemIdx, data });
   },
 };
 
 const itemHandlers = {
   updateItemData: ({ commit, getters }, { id, data }) => {
-    const { caseIdx, dropIdx, itemIdx } = getters.itemsMap[id];
+    const { caseIdx, dropItemIdx, itemIdx } = getters.itemsMap[id];
 
-    commit(UPDATE_ITEM_DATA, { caseIdx, dropIdx, itemIdx, data });
+    commit(UPDATE_ITEM_DATA, { caseIdx, dropItemIdx, itemIdx, data });
   },
 };
 

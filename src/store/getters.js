@@ -5,18 +5,18 @@ export default {
     Object.entries(getters.caseListMap).forEach(([, caseIdx]) => {
       const currentCaseList = state.app.caseList[caseIdx];
       currentCaseList.dropList.forEach((d, i) => {
-        map[d.id] = { caseIdx, dropIdx: i };
+        map[d.id] = { caseIdx, dropItemIdx: i };
       });
     });
     return map;
   },
   itemsMap: (state, getters) => {
     const map = {};
-    Object.entries(getters.dropListMap).forEach(([, { caseIdx, dropIdx }]) => {
+    Object.entries(getters.dropListMap).forEach(([, { caseIdx, dropItemIdx }]) => {
       const currentCaseList = state.app.caseList[caseIdx];
-      const currentDropList = currentCaseList.dropList[dropIdx];
+      const currentDropList = currentCaseList.dropList[dropItemIdx];
       currentDropList.itemList.forEach((item, i) => {
-        map[item.id] = { caseIdx, dropIdx, itemIdx: i };
+        map[item.id] = { caseIdx, dropItemIdx, itemIdx: i };
       });
     });
     return map;

@@ -83,9 +83,13 @@
         item-key="id"
         @change="handleDraggableChange"
       >
-        <template #item="{ element }">
+        <template #item="{ element, index }">
           <li class="case-list-item__drop-list-item">
-            <DropListItem :drop-item="element" />
+            <DropListItem
+              :drop-item="element"
+              @remove="handleRemoveDropListItem(index)"
+              @copy="handleCopyDropListItem(index)"
+            />
           </li>
         </template>
       </draggable>
@@ -104,15 +108,19 @@ import UiConfirmModal from "@/components/ui-kit/UiConfirmModal.vue";
 
 export default {
   name: "CaseListItem",
-  props: {
-    caseItem: { type: Object, required: true },
-  },
   components: {
     DropListItem,
     UiFAIconCircleButton,
     UiImageDropArea,
     UiConfirmModal,
     draggable,
+  },
+  props: {
+    caseItem: { type: Object, required: true },
+  },
+  emits: {
+    remove: null,
+    copy: null,
   },
   data() {
     return {
@@ -127,12 +135,12 @@ export default {
   },
   methods: {
     ...mapActions([
-      "addNewDropListItemToCaseList",
-      "copyCaseListItem",
-      "deleteCaseListItem",
       "updateCaseData",
       "addFileToFileMap",
-      "handleDragAndDropDropList",
+      "handleDragAndDropDropListItem",
+      "addNewItemToDropList",
+      "copyDropListItem",
+      "removeDropListItem",
     ]),
 
     handleInputChange(evt, fieldName) {
@@ -169,7 +177,7 @@ export default {
       const action = Object.keys(evt)[0];
       const data = evt[action];
 
-      this.handleDragAndDropDropList({
+      this.handleDragAndDropDropListItem({
         ...data,
         caseId: this.caseItem.id,
         action: actionNameMap[action],
@@ -177,18 +185,15 @@ export default {
     },
 
     handleAddClick() {
-      this.addNewDropListItemToCaseList({ caseId: this.caseItem.id });
+      this.addNewItemToDropList({ caseId: this.caseItem.id });
     },
 
     handleCopyClick() {
-      this.copyCaseListItem({ caseId: this.caseItem.id });
+      this.$emit("copy");
     },
 
     async handleDeleteClick() {
-      const { caseName } = this.caseItem;
-      const title = `Remove ${caseName ? `"${caseName}" ` : ""}case?`;
-      const res = await this.$refs.modal.open({ title });
-      if (res) this.deleteCaseListItem({ caseId: this.caseItem.id });
+      this.$emit("remove");
     },
 
     handleImageButtonClick() {
@@ -203,6 +208,15 @@ export default {
     getImageSrc(fieldName) {
       const file = this.getCurrentFile(fieldName);
       return file ? URL.createObjectURL(file) : this.caseItem[fieldName];
+    },
+
+    async handleRemoveDropListItem(dropItemIdx) {
+      const res = await this.$refs.modal.open({ title: "Remove drop list?" });
+      if (res) this.removeDropListItem({ caseId: this.caseItem.id, dropItemIdx });
+    },
+
+    handleCopyDropListItem(dropItemIdx) {
+      this.copyDropListItem({ caseId: this.caseItem.id, dropItemIdx });
     },
   },
 };

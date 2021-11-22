@@ -20,14 +20,14 @@ export default {
     state.app.caseList[caseIdx][key] = value;
   },
 
-  [UPDATE_DROP_LIST_ITEM_DATA]: (state, { caseIdx, dropIdx, data }) => {
+  [UPDATE_DROP_LIST_ITEM_DATA]: (state, { caseIdx, dropItemIdx, data }) => {
     const { key, value } = data;
-    state.app.caseList[caseIdx].dropList[dropIdx][key] = value;
+    state.app.caseList[caseIdx].dropList[dropItemIdx][key] = value;
   },
 
-  [UPDATE_ITEM_DATA]: (state, { caseIdx, dropIdx, itemIdx, data }) => {
+  [UPDATE_ITEM_DATA]: (state, { caseIdx, dropItemIdx, itemIdx, data }) => {
     const { key, value } = data;
-    state.app.caseList[caseIdx].dropList[dropIdx].itemList[itemIdx][key] = value;
+    state.app.caseList[caseIdx].dropList[dropItemIdx].itemList[itemIdx][key] = value;
   },
 
   [SET_FILE_TO_FILE_MAP]: (state, { file }) => {

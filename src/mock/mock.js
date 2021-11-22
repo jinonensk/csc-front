@@ -1,27 +1,27 @@
 // import { v4 as uuidv4 } from "uuid";
 
-const makeItem = ({ caseId, dropRateId, caseIdx, dropIdx, itemIdx }) => ({
+const makeItem = ({ caseId, dropRateId, caseIdx, dropItemIdx, itemIdx }) => ({
   // id: uuidv4(),
-  id: `ITEM_ID:${caseIdx}${dropIdx}${itemIdx}`,
+  id: `ITEM_ID:${caseIdx}${dropItemIdx}${itemIdx}`,
   caseId,
   dropRateId,
   itemPrice: "1.08",
-  itemName: `Case #${caseIdx} Drop #${dropIdx} Item #${itemIdx}`,
+  itemName: `Case #${caseIdx} Drop #${dropItemIdx} Item #${itemIdx}`,
   skinName: "Pixel Camouflage",
   skinImg: "какой-пацан-исходник.jpg",
   // skinImg: "Content_AKR12_PixelCamouflage_PreviewHD.png",
 });
 
-const makeDropItem = ({ caseId, nItems, caseIdx, dropIdx }) => {
+const makeDropItem = ({ caseId, nItems, caseIdx, dropItemIdx }) => {
   // const id = uuidv4();
-  const id = `DROP_ID:${caseIdx}${dropIdx}`;
+  const id = `DROP_ID:${caseIdx}${dropItemIdx}`;
   return {
     id,
     rate: 5822,
     color: "#2943c4",
     itemList: new Array(nItems)
       .fill(undefined)
-      .map((_, itemIdx) => makeItem({ caseId, dropRateId: id, caseIdx, dropIdx, itemIdx })),
+      .map((_, itemIdx) => makeItem({ caseId, dropRateId: id, caseIdx, dropItemIdx, itemIdx })),
   };
 };
 
@@ -36,7 +36,7 @@ const makeCase = ({ nDrops, nItems, caseIdx }) => {
     caseSpinBackground: "content/OriginCollectionBackground.png",
     dropList: new Array(nDrops)
       .fill(undefined)
-      .map((_, dropIdx) => makeDropItem({ caseId: id, nItems, caseIdx, dropIdx })),
+      .map((_, dropItemIdx) => makeDropItem({ caseId: id, nItems, caseIdx, dropItemIdx })),
   };
 };
 
