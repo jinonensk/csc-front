@@ -11,9 +11,16 @@
         </li>
         <li>
           <UiFAIconCircleButton
-            :icon="isOpen ? 'angle-down' : 'angle-up'"
+            :icon="isOpen ? 'angle-up' : 'angle-down'"
             :title="isOpen ? 'Collapse' : 'Open'"
             @click.stop="isOpen = !isOpen"
+          />
+        </li>
+        <li>
+          <UiFAIconCircleButton
+            icon="expand-arrows-alt"
+            class="drop-list-item__draggable"
+            title="Grab and move"
           />
         </li>
         <li>
@@ -25,7 +32,15 @@
       <div class="drop-list-item__inputs-container">
         <label>
           <p>Drop rate:</p>
-          <input type="text" :value="dropItem.rate" @change="handleInputChange($event, 'rate')" />
+          <input
+            type="range"
+            :value="dropItem.rate"
+            min="0"
+            max="10000"
+            step="100"
+            @change="handleInputChange($event, 'rate')"
+          />
+          <span>{{ dropItem.rate / 100 }}%</span>
         </label>
         <label>
           <p>Drop color:</p>
@@ -41,6 +56,7 @@
         group="item-list-items"
         tag="ul"
         item-key="id"
+        handle=".item-list-item__draggable"
         @change="handleDraggableChange"
       >
         <template #item="{ element }">
@@ -184,7 +200,6 @@ export default {
 <style lang="scss" scoped>
 .drop-list-item {
   border-radius: 5px;
-  cursor: grab;
   background-color: #ffffff;
 }
 .drop-list-item__header {
@@ -203,6 +218,14 @@ export default {
 
   li {
     margin-left: 8px;
+  }
+}
+.drop-list-item__draggable {
+  &:hover {
+    cursor: grab !important;
+  }
+  &:active {
+    cursor: grabbing !important;
   }
 }
 .drop-list-item__content {

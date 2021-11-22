@@ -42,6 +42,7 @@
     <draggable
       :model-value="app.caseList"
       class="app__case-list"
+      handle=".case-list-item__draggable"
       tag="ul"
       item-key="id"
       :style="{ 'grid-template-columns': `repeat(${columnsCount}, 1fr)` }"

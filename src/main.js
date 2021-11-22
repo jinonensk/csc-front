@@ -6,6 +6,7 @@ import {
   faAngleDown,
   faAngleUp,
   faClone,
+  faExpandArrowsAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
 import "@/assets/global.scss";
@@ -13,7 +14,7 @@ import "@/assets/global.scss";
 import App from "./App.vue";
 import store from "./store";
 
-library.add([faTimes, faPlus, faAngleDown, faAngleUp, faClone]);
+library.add([faTimes, faPlus, faAngleDown, faAngleUp, faClone, faExpandArrowsAlt]);
 
 const app = createApp(App);
 app.config.productionTip = false;

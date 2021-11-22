@@ -3,7 +3,7 @@ import { makeDraftItem } from "./make-draft-item";
 
 export const makeDraftDropListItem = ({ caseId, dropRateId = uuidv4() }) => ({
   id: dropRateId,
-  rate: 5822,
+  rate: 5000,
   color: "#2943c4",
   itemList: [makeDraftItem({ caseId, dropRateId })],
 });

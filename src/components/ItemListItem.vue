@@ -7,6 +7,13 @@
           <UiFAIconCircleButton icon="clone" title="Copy" @click="handleCopyButtonClick" />
         </li>
         <li>
+          <UiFAIconCircleButton
+            icon="expand-arrows-alt"
+            class="item-list-item__draggable"
+            title="Grab and move"
+          />
+        </li>
+        <li>
           <UiFAIconCircleButton icon="times" title="Delete" @click="handleDeleteButtonClick" />
         </li>
       </ul>
@@ -146,6 +153,14 @@ export default {
 
   li {
     margin-left: 8px;
+  }
+}
+.item-list-item__draggable {
+  &:hover {
+    cursor: grab !important;
+  }
+  &:active {
+    cursor: grabbing !important;
   }
 }
 .item-list-item__container {

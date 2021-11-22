@@ -11,9 +11,16 @@
         </li>
         <li>
           <UiFAIconCircleButton
-            :icon="isOpen ? 'angle-down' : 'angle-up'"
+            :icon="isOpen ? 'angle-up' : 'angle-down'"
             :title="isOpen ? 'Collapse' : 'Open'"
             @click.stop="isOpen = !isOpen"
+          />
+        </li>
+        <li>
+          <UiFAIconCircleButton
+            icon="expand-arrows-alt"
+            class="case-list-item__draggable"
+            title="Grab and move"
           />
         </li>
         <li>
@@ -62,9 +69,16 @@
           />
         </li>
       </ul>
+      <p
+        class="case-list-item__rate"
+        :class="{ 'case-list-item__rate--error': +totalDropListItemsRate !== 100 }"
+      >
+        Total drop list items rate: {{ totalDropListItemsRate }}%
+      </p>
       <draggable
         :model-value="caseItem.dropList"
         group="drop-list"
+        handle=".drop-list-item__draggable"
         tag="ul"
         item-key="id"
         @change="handleDraggableChange"
@@ -105,7 +119,12 @@ export default {
       isOpen: true,
     };
   },
-  computed: mapState(["fileToFileNameMap"]),
+  computed: {
+    ...mapState(["fileToFileNameMap"]),
+    totalDropListItemsRate() {
+      return this.caseItem.dropList.reduce((acc, item) => acc + item.rate / 100, 0);
+    },
+  },
   methods: {
     ...mapActions([
       "addNewDropListItemToCaseList",
@@ -215,6 +234,14 @@ export default {
     margin-left: 8px;
   }
 }
+.case-list-item__draggable {
+  &:hover {
+    cursor: grab !important;
+  }
+  &:active {
+    cursor: grabbing !important;
+  }
+}
 .case-list-item__inputs-container {
   display: flex;
   flex-direction: column;
@@ -238,12 +265,19 @@ export default {
 .case-list-item__images-list {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 16px;
 }
 .case-list-item__images-item {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+}
+.case-list-item__rate {
+  margin-bottom: 16px;
+  padding: 5px;
+
+  &--error {
+    background-color: red;
+  }
 }
 .case-list-item__drop-list-item {
   margin-bottom: 8px;
