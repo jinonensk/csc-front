@@ -71,9 +71,9 @@
       </ul>
       <p
         class="case-list-item__rate"
-        :class="{ 'case-list-item__rate--error': +totalDropListItemsRate !== 100 }"
+        :class="{ 'case-list-item__rate--error': +totalDropListItemsRate !== 10000 }"
       >
-        Total drop list items rate: {{ totalDropListItemsRate }}%
+        Total drop list items rate (10000): {{ totalDropListItemsRate }}
       </p>
       <draggable
         :model-value="caseItem.dropList"
@@ -130,7 +130,7 @@ export default {
   computed: {
     ...mapState(["fileToFileNameMap"]),
     totalDropListItemsRate() {
-      return this.caseItem.dropList.reduce((acc, item) => acc + item.rate / 100, 0);
+      return this.caseItem.dropList.reduce((acc, item) => acc + +item.rate, 0);
     },
   },
   methods: {

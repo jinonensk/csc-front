@@ -37,10 +37,10 @@
             :value="dropItem.rate"
             min="0"
             max="10000"
-            step="100"
+            step="1"
             @change="handleInputChange($event, 'rate')"
           />
-          <span>{{ dropItem.rate / 100 }}%</span>
+          <span>{{ dropItem.rate }}</span>
         </label>
         <label>
           <p>Drop color:</p>

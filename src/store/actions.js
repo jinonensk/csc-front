@@ -37,6 +37,103 @@ const arrayHelper = {
   },
 };
 
+const extractInfo = ({ state, getters, itemId, dropId, caseId }) => {
+  if (!state || !getters) throw new Error("need state and getters");
+
+  const { caseListMap, dropListMap, itemsMap } = getters;
+  const { caseList } = state.app;
+
+  if (itemId) {
+    const { dropItemIdx, caseIdx, itemIdx } = itemsMap[itemId];
+    const caseItem = caseList[caseIdx];
+    const { dropList } = caseItem;
+    const dropListItem = dropList[dropItemIdx];
+    const { itemList } = dropListItem;
+    const itemListItem = itemList[itemIdx];
+    return {
+      caseIdx,
+      dropItemIdx,
+      itemIdx,
+      caseList,
+      caseItem,
+      dropList,
+      dropListItem,
+      itemList,
+      itemListItem,
+    };
+  }
+
+  if (dropId) {
+    const { dropItemIdx, caseIdx } = dropListMap[dropId];
+    const caseItem = caseList[caseIdx];
+    const { dropList } = caseItem;
+    const dropListItem = dropList[dropItemIdx];
+    const { itemList } = dropListItem;
+    return {
+      caseIdx,
+      dropItemIdx,
+      caseList,
+      caseItem,
+      dropList,
+      dropListItem,
+      itemList,
+    };
+  }
+
+  if (caseId) {
+    const caseIdx = caseListMap[caseId];
+    const caseItem = caseList[caseIdx];
+    const { dropList } = caseItem;
+    return {
+      caseIdx,
+      caseList,
+      caseItem,
+      dropList,
+    };
+  }
+
+  return {};
+};
+
+// const buildExtractors = ({ state, getters }) => {
+//   const caseList = state.app;
+//   const { caseListMap, dropListMap, itemsMap } = getters;
+
+//   return {
+//     extractInfoByCaseId(id) {
+//       const caseIdx = caseListMap[id];
+//       const caseItem = caseList[caseIdx];
+//       return { caseList, caseItem, caseIdx };
+//     },
+//     extractInfoByDropId(id) {
+//       const { dropItemIdx, caseIdx } = dropListMap[id];
+//       const caseItem = caseList[caseIdx];
+//       const { dropList } = caseItem;
+//       const dropListItem = dropList[dropItemIdx];
+//       return { caseList, caseItem, dropList, dropListItem, dropItemIdx, caseIdx };
+//     },
+//     extractInfoByItemId(id) {
+//       const { dropItemIdx, caseIdx, itemIdx } = itemsMap[id];
+//       const caseItem = caseList[caseIdx];
+//       const { dropList } = caseItem;
+//       const dropListItem = dropList[dropItemIdx];
+//       const { itemList } = dropListItem;
+//       const itemListItem = itemList[itemIdx];
+//       return {
+//         caseList,
+//         caseItem,
+//         dropList,
+//         dropListItem,
+//         itemList,
+//         itemListItem,
+//         dropItemIdx,
+//         caseIdx,
+//         itemIdx,
+//       };
+//     },
+//   };
+// };
+
 const appHandlers = {
   handleDraggableCaseListMoved: ({ commit, state }, { action, ...rest }) => {
     const { caseList } = state.app;
@@ -76,8 +173,7 @@ const caseHandlers = {
     { state, getters, commit },
     { caseId, action, element, oldIndex, newIndex },
   ) => {
-    const caseIdx = getters.caseListMap[caseId];
-    const { dropList } = state.app.caseList[caseIdx];
+    const { caseIdx, dropList } = extractInfo({ state, getters, caseId });
     const handler = arrayHelper[action];
 
     if (action === "insert") {
@@ -92,8 +188,7 @@ const caseHandlers = {
     commit(UPDATE_CASE_DATA, { caseIdx, data: { key: "dropList", value: newDropList } });
   },
   removeDropListItem: ({ commit, getters, state }, { caseId, dropItemIdx }) => {
-    const caseIdx = getters.caseListMap[caseId];
-    const { dropList } = state.app.caseList[caseIdx];
+    const { caseIdx, dropList } = extractInfo({ state, getters, caseId });
 
     const newDropList = arrayHelper.remove({ array: dropList, oldIndex: dropItemIdx });
 
@@ -103,8 +198,7 @@ const caseHandlers = {
     });
   },
   copyDropListItem: ({ commit, getters, state }, { caseId, dropItemIdx }) => {
-    const caseIdx = getters.caseListMap[caseId];
-    const { dropList } = state.app.caseList[caseIdx];
+    const { caseIdx, dropList } = extractInfo({ state, getters, caseId });
 
     const element = copyDropListItem(dropList[dropItemIdx]);
     const newDropList = arrayHelper.add({ array: dropList, element });
@@ -115,8 +209,7 @@ const caseHandlers = {
     });
   },
   addNewItemToDropList: ({ commit, getters, state }, { caseId }) => {
-    const caseIdx = getters.caseListMap[caseId];
-    const { dropList } = state.app.caseList[caseIdx];
+    const { caseIdx, dropList } = extractInfo({ state, getters, caseId });
 
     const element = makeDraftDropListItem({ caseId });
     const newDropList = arrayHelper.add({ array: dropList, element });
@@ -138,13 +231,12 @@ const dropListItemHandlers = {
     { state, getters, commit },
     { dropId, action, element, oldIndex, newIndex },
   ) => {
-    const { caseIdx, dropItemIdx } = getters.dropListMap[dropId];
-    const currentCase = state.app.caseList[caseIdx];
-    const itemList = [...currentCase.dropList[dropItemIdx].itemList];
+    const { caseIdx, dropItemIdx, caseList, itemList } = extractInfo({ state, getters, dropId });
+
     const handler = arrayHelper[action];
 
     if (action === "insert") {
-      element.caseId = currentCase.id;
+      element.caseId = caseList.id;
       element.dropRateId = dropId;
     }
 
@@ -157,8 +249,7 @@ const dropListItemHandlers = {
     });
   },
   removeItemListItem: ({ state, getters, commit }, { dropId, itemIdx }) => {
-    const { caseIdx, dropItemIdx } = getters.dropListMap[dropId];
-    const { itemList } = state.app.caseList[caseIdx].dropList[dropItemIdx];
+    const { caseIdx, dropItemIdx, itemList } = extractInfo({ state, getters, dropId });
 
     const newItemList = arrayHelper.remove({ array: itemList, oldIndex: itemIdx });
 
@@ -169,8 +260,7 @@ const dropListItemHandlers = {
     });
   },
   copyItemListItem: ({ state, getters, commit }, { dropId, itemIdx }) => {
-    const { caseIdx, dropItemIdx } = getters.dropListMap[dropId];
-    const { itemList } = state.app.caseList[caseIdx].dropList[dropItemIdx];
+    const { caseIdx, dropItemIdx, itemList } = extractInfo({ state, getters, dropId });
 
     const element = copyItem(itemList[itemIdx]);
     const newItemList = arrayHelper.add({ array: itemList, element });
@@ -182,9 +272,8 @@ const dropListItemHandlers = {
     });
   },
   addNewItemToItemList: ({ state, getters, commit }, { dropId, initialItemData = {} }) => {
-    const { caseIdx, dropItemIdx } = getters.dropListMap[dropId];
+    const { caseIdx, dropItemIdx, itemList } = extractInfo({ state, getters, dropId });
     const currentCase = state.app.caseList[caseIdx];
-    const { itemList } = currentCase.dropList[dropItemIdx];
 
     const element = makeDraftItem({ dropId, caseId: currentCase.id });
     const newItemList = arrayHelper.add({
@@ -198,16 +287,16 @@ const dropListItemHandlers = {
       data: { key: "itemList", value: newItemList },
     });
   },
-  updateDropListItemData: ({ commit, getters }, { dropId, data }) => {
-    const { caseIdx, dropItemIdx } = getters.dropListMap[dropId];
+  updateDropListItemData: ({ commit, getters, state }, { dropId, data }) => {
+    const { caseIdx, dropItemIdx } = extractInfo({ state, getters, dropId });
 
     commit(UPDATE_DROP_LIST_ITEM_DATA, { caseIdx, dropItemIdx, data });
   },
 };
 
 const itemHandlers = {
-  updateItemData: ({ commit, getters }, { id, data }) => {
-    const { caseIdx, dropItemIdx, itemIdx } = getters.itemsMap[id];
+  updateItemData: ({ commit, getters, state }, { id, data }) => {
+    const { caseIdx, dropItemIdx, itemIdx } = extractInfo({ state, getters, itemId: id });
 
     commit(UPDATE_ITEM_DATA, { caseIdx, dropItemIdx, itemIdx, data });
   },
