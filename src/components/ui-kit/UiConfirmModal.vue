@@ -8,11 +8,12 @@
         @click="handleClose"
       />
       <h2 class="confirm-modal__title">{{ title }}</h2>
+      <p v-if="text" class="confirm-modal__text">{{ text }}</p>
       <ul class="confirm-modal__buttons">
-        <li>
+        <li v-if="!hideYesButton">
           <UiButton @click="handleConfirm">Yes</UiButton>
         </li>
-        <li>
+        <li v-if="!hideNoButton">
           <UiButton @click="handleClose">No</UiButton>
         </li>
       </ul>
@@ -28,12 +29,27 @@ export default {
     UiButton,
     UiFAIconCircleButton,
   },
+
+  props: {
+    hideYesButton: {
+      type: Boolean,
+      default: false,
+    },
+    hideNoButton: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
   data() {
     return {
       isOpen: false,
       title: "Delete?",
+      text: "",
     };
   },
+
+  mounted() {},
 
   currentPopupController: null,
 
@@ -41,6 +57,9 @@ export default {
     isOpen(newVal) {
       if (newVal) {
         const hasScrollOnPage = this.checkPageScroll();
+
+        console.log(this.hideYesButton);
+        console.log(this.hideNoButton);
 
         document.addEventListener("keydown", this.handleEscClick);
         document.body.classList.add("popup-open");
@@ -54,8 +73,9 @@ export default {
   },
 
   methods: {
-    open({ title }) {
+    open({ title, text = "" }) {
       this.title = title;
+      this.text = text;
 
       let resolve;
       let reject;
@@ -117,7 +137,11 @@ export default {
 }
 .confirm-modal__title {
   text-align: center;
-  margin-bottom: auto;
+  margin: auto;
+}
+.confirm-modal__text {
+  text-align: center;
+  margin: auto;
 }
 .confirm-modal__buttons {
   display: flex;

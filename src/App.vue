@@ -1,44 +1,64 @@
 <template>
-  <header class="app__header">
-    <UiButton class="app__header-button" @click="handleLoadJsonClick">Load json</UiButton>
-    <UiButton class="app__header-button" @click="handleLoadImagesClick">Load images</UiButton>
-    <UiButton class="app__header-button" @click="handleAddNewCaseClick">Add new case</UiButton>
-    <div class="app__columns-select">
-      <p class="app__columns-select-title">Колонок:</p>
-      <UiFAIconCircleButton
-        class="app__columns-button"
-        title="Add new case"
-        @click="setColumnCount(1)"
-      >
-        1
-      </UiFAIconCircleButton>
-      <UiFAIconCircleButton
-        class="app__columns-button"
-        title="Add new case"
-        @click="setColumnCount(2)"
-      >
-        2
-      </UiFAIconCircleButton>
-      <UiFAIconCircleButton
-        class="app__columns-button"
-        title="Add new case"
-        @click="setColumnCount(4)"
-      >
-        4
-      </UiFAIconCircleButton>
-      <UiFAIconCircleButton
-        class="app__columns-button"
-        title="Add new case"
-        @click="setColumnCount(8)"
-      >
-        8
-      </UiFAIconCircleButton>
-    </div>
-    <UiButton class="app__header-button app__header-button--export" @click="handleExportJsonClick">
-      Export json
-    </UiButton>
-  </header>
+  <AppHeader class="app__header" @change-columns-count="setColumnCount" />
   <main class="app__main">
+    <div class="app__content-container">
+      <div class="app__content-image">
+        <h3>Game Background</h3>
+        <UiImageDropArea
+          :imageSrc="gameBackgroundSrc"
+          :is-show-image="!!gameBackgroundFile"
+          :imageAlt="app.gameBackground"
+          @delete="handleImageDelete"
+          @upload="handleImageUpload"
+        />
+      </div>
+      <div class="app__content-data">
+        <label class="app__input-label">
+          <p>Start money:</p>
+          <input type="text" :value="app.startMoney" @change="handleInputChange('startMoney')" />
+        </label>
+        <label class="app__input-label">
+          <p>Video reward:</p>
+          <input
+            type="text"
+            :value="app.rewardedVideoReward"
+            @change="handleInputChange($event, 'rewardedVideoReward')"
+          />
+        </label>
+        <label class="app__input-label">
+          <p>Clicker reward:</p>
+          <input
+            type="text"
+            :value="app.clickerReward"
+            @change="handleInputChange($event, 'clickerReward')"
+          />
+        </label>
+        <label class="app__input-label">
+          <p>Color primary:</p>
+          <input
+            type="color"
+            :value="app.themeColors.colorPrimary"
+            @change="handleColorInputChange($event, 'colorPrimary')"
+          />
+        </label>
+        <label class="app__input-label">
+          <p>Color primary dark:</p>
+          <input
+            type="color"
+            :value="app.themeColors.colorPrimaryDark"
+            @change="handleColorInputChange($event, 'colorPrimaryDark')"
+          />
+        </label>
+        <label class="app__input-label">
+          <p>Color accent:</p>
+          <input
+            type="color"
+            :value="app.themeColors.colorAccent"
+            @change="handleColorInputChange($event, 'colorAccent')"
+          />
+        </label>
+      </div>
+    </div>
     <draggable
       :model-value="app.caseList"
       class="app__case-list"
@@ -59,21 +79,6 @@
       </template>
     </draggable>
   </main>
-  <input
-    ref="loadJson"
-    class="visually-hidden"
-    type="file"
-    accept="application/JSON"
-    @change="handleLoadJsonChange"
-  />
-  <input
-    ref="loadImages"
-    class="visually-hidden"
-    multiple
-    type="file"
-    accept="image/*"
-    @change="handleLoadImagesChange"
-  />
   <UiConfirmModal ref="modal" />
 </template>
 <script>
@@ -81,18 +86,18 @@ import { mapActions, mapState } from "vuex";
 import draggable from "vuedraggable";
 
 import CaseListItem from "@/components/CaseListItem.vue";
-import UiFAIconCircleButton from "@/components/ui-kit/UiFAIconCircleButton.vue";
-import UiButton from "@/components/ui-kit/UiButton.vue";
+import AppHeader from "@/components/AppHeader.vue";
 import UiConfirmModal from "@/components/ui-kit/UiConfirmModal.vue";
+import UiImageDropArea from "@/components/ui-kit/UiImageDropArea.vue";
 
 export default {
   name: "App",
   components: {
+    AppHeader,
     CaseListItem,
     draggable,
-    UiFAIconCircleButton,
-    UiButton,
     UiConfirmModal,
+    UiImageDropArea,
   },
   data() {
     return {
@@ -100,62 +105,36 @@ export default {
     };
   },
   computed: {
-    ...mapState(["app"]),
+    ...mapState(["app", "fileToFileNameMap"]),
+
+    gameBackgroundFile() {
+      const imageName = this.app.gameBackground;
+      return this.fileToFileNameMap[imageName];
+    },
+
+    gameBackgroundSrc() {
+      const file = this.gameBackgroundFile;
+      return file ? URL.createObjectURL(file) : this.app.gameBackground;
+    },
   },
   methods: {
     ...mapActions([
-      "setApp",
       "handleDraggableCaseListMoved",
-      "addFileToFileMap",
-      "addNewCase",
       "deleteCase",
       "copyCase",
+      "addFileToFileMap",
+      "updateAppData",
+      "updateAppColor",
     ]),
 
-    handleLoadJsonClick() {
-      this.$refs.loadJson.click();
+    handleInputChange(evt, fieldName) {
+      const { value } = evt.target;
+      this.updateAppData({ key: fieldName, value });
     },
 
-    handleLoadImagesClick() {
-      this.$refs.loadImages.click();
-    },
-
-    handleLoadJsonChange() {
-      const input = this.$refs.loadJson;
-      const { files } = input;
-      if (!files?.length) return;
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const jsonObj = JSON.parse(event.target.result);
-        this.setApp(jsonObj);
-      };
-
-      reader.readAsText(files[0]);
-
-      input.value = "";
-    },
-
-    handleLoadImagesChange() {
-      const input = this.$refs.loadImages;
-      const { files } = input;
-      if (!files?.length) return;
-
-      for (let i = 0; i < files.length; i++) {
-        this.addFileToFileMap({ file: files[i] });
-      }
-
-      input.value = "";
-    },
-
-    handleExportJsonClick() {
-      const dataStr = JSON.stringify(this.app);
-      const dataUri = `data:application/json;charset=utf-8,${encodeURIComponent(dataStr)}`;
-      const exportFileDefaultName = "data.json";
-      const linkElement = document.createElement("a");
-      linkElement.setAttribute("href", dataUri);
-      linkElement.setAttribute("download", exportFileDefaultName);
-      linkElement.click();
+    handleColorInputChange(evt, fieldName) {
+      const { value } = evt.target;
+      this.updateAppColor({ key: fieldName, value });
     },
 
     handleDraggableChange({ moved }) {
@@ -166,8 +145,13 @@ export default {
       this.columnsCount = count;
     },
 
-    handleAddNewCaseClick() {
-      this.addNewCase();
+    handleImageUpload(file) {
+      this.updateAppData({ key: "gameBackground", value: file.name });
+      this.addFileToFileMap({ file });
+    },
+
+    handleImageDelete() {
+      this.updateAppData({ key: "gameBackground", value: "" });
     },
 
     async handleRemoveCase(caseIdx) {
@@ -185,37 +169,37 @@ export default {
 </script>
 <style lang="scss" scoped>
 .app__header {
-  display: flex;
-  align-items: center;
   margin-bottom: 24px;
-  padding: 8px 50px;
-  border-bottom: 1px solid rgba(128, 128, 128, 0.5);
 }
 .app__main {
   display: flex;
   flex-direction: column;
   padding: 0 50px;
 }
-
-.app__header-button {
-  margin-right: 16px;
-
-  &--export {
-    margin-left: auto;
-    margin-right: 0;
-  }
-}
-
-.app__columns-select {
+.app__content-container {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
 }
-.app__columns-select-title {
-  margin: 0;
-  margin-right: 4px;
+.app__content-data {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  min-width: 200px;
+  margin: 0 auto;
+  padding: 8px;
 }
-.app__columns-button {
-  margin-right: 4px;
+.app__input-label {
+  display: flex;
+  margin-bottom: 4px;
+
+  p {
+    min-width: 135px;
+  }
+  input {
+    width: 100%;
+  }
 }
 .app__case-list {
   display: grid;

@@ -46,6 +46,7 @@
             @change="handleInputChange($event, 'casePrice')"
           />
         </label>
+        <button :disabled="!isValidRates" @click="testDropPrice">Test average drop pice</button>
       </div>
       <ul class="case-list-item__images-list">
         <li class="case-list-item__images-item">
@@ -69,10 +70,7 @@
           />
         </li>
       </ul>
-      <p
-        class="case-list-item__rate"
-        :class="{ 'case-list-item__rate--error': +totalDropListItemsRate !== 10000 }"
-      >
+      <p class="case-list-item__rate" :class="{ 'case-list-item__rate--error': !isValidRates }">
         Total drop list items rate (10000): {{ totalDropListItemsRate }}
       </p>
       <draggable
@@ -96,6 +94,7 @@
     </template>
   </div>
   <UiConfirmModal ref="modal" />
+  <UiConfirmModal ref="answerModal" hide-yes-button hide-no-button />
 </template>
 <script>
 import { mapActions, mapState } from "vuex";
@@ -105,6 +104,8 @@ import DropListItem from "@/components/DropListItem.vue";
 import UiFAIconCircleButton from "@/components/ui-kit/UiFAIconCircleButton.vue";
 import UiImageDropArea from "@/components/ui-kit/UiImageDropArea.vue";
 import UiConfirmModal from "@/components/ui-kit/UiConfirmModal.vue";
+
+import { getRandomValue } from "@/utils/get-random-value";
 
 export default {
   name: "CaseListItem",
@@ -131,6 +132,9 @@ export default {
     ...mapState(["fileToFileNameMap"]),
     totalDropListItemsRate() {
       return this.caseItem.dropList.reduce((acc, item) => acc + +item.rate, 0);
+    },
+    isValidRates() {
+      return +this.totalDropListItemsRate === 10000;
     },
   },
   methods: {
@@ -217,6 +221,52 @@ export default {
 
     handleCopyDropListItem(dropItemIdx) {
       this.copyDropListItem({ caseId: this.caseItem.id, dropItemIdx });
+    },
+
+    testDropPrice() {
+      const MAX_PROB = 10000;
+      const TEST_RUN_COUNT = 1000;
+      let totalSell = 0;
+      // const log = [];
+      const cumulativeProbs = {};
+
+      let sum = 0;
+      this.caseItem.dropList.forEach((dropListItem) => {
+        const { rate, itemList } = dropListItem;
+        sum += +rate;
+        cumulativeProbs[sum] = itemList;
+      });
+
+      const cumulatimeProbEntris = Object.entries(cumulativeProbs);
+
+      for (let i = 0; i <= TEST_RUN_COUNT; i++) {
+        const prob = getRandomValue(0, MAX_PROB);
+        let resultItemList;
+
+        for (let j = 0; j < cumulatimeProbEntris.length; j++) {
+          const [key, value] = cumulatimeProbEntris[j];
+          if (prob <= key) {
+            resultItemList = value;
+            break;
+          }
+        }
+        // console.log(`${prob}: ${resultItemList}`);
+
+        const index = getRandomValue(0, resultItemList.length - 1);
+        const { itemPrice, name } = resultItemList[index];
+        if (!itemPrice) throw new Error(`No price, item: ${name}`);
+        // log.push(itemPrice);
+        totalSell += +itemPrice;
+      }
+
+      const result = Math.round(totalSell / TEST_RUN_COUNT);
+      // console.log("RESULT", log);
+      // console.log("cumulativeProbs", cumulativeProbs);
+      // console.log("cumulativeProbs", cumulativeProbs);
+      this.$refs.answerModal.open({
+        title: result,
+        text: `(average by ${TEST_RUN_COUNT} runs)`,
+      });
     },
   },
 };

@@ -166,6 +166,14 @@ const appHandlers = {
 
     commit(UPDATE_APP_DATA, { key: "caseList", value: newCaseList });
   },
+  updateAppColor: ({ state, commit }, { key, value }) => {
+    const colors = { ...state.app.themeColors };
+    colors[key] = value;
+    commit(UPDATE_APP_DATA, { key: "themeColors", value: colors });
+  },
+  updateAppData: ({ commit }, { key, value }) => {
+    commit(UPDATE_APP_DATA, { key, value });
+  },
 };
 
 const caseHandlers = {

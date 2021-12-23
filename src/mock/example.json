@@ -1,4 +1,20 @@
 {
+  "gameBackground": "0_FON.PNG",
+  "menuType": "sideMenu",
+  "spinSound": "",
+  "dropSound": "",
+  "musicBackground": "",
+  "enableEconomic": true,
+  "startMoney": "17000",
+  "rewardedVideoReward": "6500",
+  "clickerReward": "10",
+  "name": "Call of Duty Case Simulator",
+  "template": "caseSimulator",
+  "themeColors": {
+    "colorPrimary": "#2196f3",
+    "colorPrimaryDark": "#1976D2",
+    "colorAccent": "#a829c2"
+  },
   "caseList": [
     {
       "id": "145077b2-77fd-400f-a528-78b0e32298d2",
