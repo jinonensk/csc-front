@@ -15,7 +15,11 @@
       <div class="app__content-data">
         <label class="app__input-label">
           <p>Start money:</p>
-          <input type="text" :value="app.startMoney" @change="handleInputChange('startMoney')" />
+          <input
+            type="text"
+            :value="app.startMoney"
+            @change="handleInputChange($event, 'startMoney')"
+          />
         </label>
         <label class="app__input-label">
           <p>Video reward:</p>
