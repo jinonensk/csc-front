@@ -1,9 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { copyItem } from "./copy-item";
 
-const newCaseId = uuidv4();
-
-const copyDropItem = (dropItem) => {
+const copyDropItem = (dropItem, newCaseId) => {
   const dropRateId = uuidv4();
   const copiedDropItem = { ...dropItem };
   copiedDropItem.id = dropRateId;
@@ -15,7 +13,8 @@ const copyDropItem = (dropItem) => {
 };
 
 export const copyCaseListItem = (item) => {
+  const newCaseId = uuidv4();
   const copiedCase = { ...item, id: newCaseId };
-  copiedCase.dropList = copiedCase.dropList.map(copyDropItem);
+  copiedCase.dropList = copiedCase.dropList.map((el) => copyDropItem(el, newCaseId));
   return copiedCase;
 };
